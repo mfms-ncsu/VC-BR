@@ -87,7 +87,9 @@ done
 # make sure you've compiled the latest version
 java_dir=${script_dir%/*/*}/VCSolver
 echo "java_dir = $java_dir"
-pushd $java_dir > /dev/null ./build.sh popd > /dev/null
+pushd $java_dir > /dev/null
+./build.sh
+popd > /dev/null
 java_exec_dir=$java_dir/bin
 
 if ! [ -e $java_exec_dir/Main.class ]; then
