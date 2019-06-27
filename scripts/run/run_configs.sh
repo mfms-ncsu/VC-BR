@@ -86,6 +86,7 @@ done
 # levels above the current one;
 # make sure you've compiled the latest version
 java_dir=${script_dir%/*/*}/VCSolver
+echo "java_dir = $java_dir"
 pushd $java_dir > /dev/null ./build.sh popd > /dev/null
 java_exec_dir=$java_dir/bin
 
@@ -101,4 +102,4 @@ java_command="java -Xss1g -Xms4g -cp $java_exec_dir Main"
 
 $exec_script $input_dir/ $output_dir/ $options_file $config_dir/$CSV_FIELDS "$java_command" > $csv_output
 
-#  [Last modified: 2019 06 27 at 14:07:58 GMT]
+#  [Last modified: 2019 06 27 at 14:57:43 GMT]
