@@ -1,15 +1,10 @@
 #! /usr/bin/env python3
 """
-@todo
-- add information at the beginning of each log file, giving
-     * host and IP address of the server; maybe even speed, cache,and memory
-     * current date and time
-     * time when program was compiled; this can be done with an 'ls -l',
-       but ideally would be printed by the code itself;
-       in SVN, it was possible to have a program print version information,
-       but git makes this much more difficult;
-       version information is even better because it doesn't require a search
-       of the repository (maybe can use tags, but requires frequent releases)
+benchmark_experiments.py - runs experiments on all files in a directory;
+                           configurations to be used and fields to put in the output
+                           are specified in config files;
+                           raw output is put into Raw_Output-xxx
+see also run_configs.sh and run_cplex.sh
 """
 
 import argparse
@@ -130,10 +125,26 @@ if __name__ == '__main__':
                               '-', ERROR_LOG_SUFFIX])
     
     # process files
-    file_list = [f for f in os.listdir(args.input_dir)
-                 if os.path.isfile(os.path.join(args.input_dir, f))
-                 and ( f.endswith('.txt') or f.endswith('.snap') ) ]
+    file_list = [ f for f in os.listdir(args.input_dir) ]
     for file_name in file_list:
+        sys.stderr.write("*** {}\n".format(file_name))
+        if not os.path.isfile(os.path.join(args.input_dir, file_name)):
+            sys.stderr.write("*** Warning: '{}' is not a regular file, ignored\n"
+                             .format(file_name))
+            continue
+        # skip over files that don't have the right extensions
+        if "java" in args.program:
+            if not file_name.endswith(".snap") and not file_name.endswith(".txt"):
+                sys.stderr.write("*** Warning: '{}' has an unrecognized extension, ignored\n"
+                                 .format(file_name))
+                sys.stderr.write("*** must be .snap or .txt if running VCSolver\n")
+                continue
+        elif "cplex" in args.program:
+            if not file_name.endswith(".lpx"):
+                sys.stderr.write("*** Warning: '{}' has an unrecognized extension, ignored\n"
+                                 .format(file_name))
+                sys.stderr.write("*** must be .lpx if running cplex\n")
+                continue
         results = {option:{field:"" for field in fields} for option in options}
         for option in options:
             # run option
@@ -157,4 +168,4 @@ if __name__ == '__main__':
             field_string = ",".join([field_string, option_string])
         print("{}{}".format(extension_omitted(file_name), field_string))
 
-#  [Last modified: 2019 06 27 at 14:10:36 GMT]
+#  [Last modified: 2019 06 28 at 20:17:02 GMT]

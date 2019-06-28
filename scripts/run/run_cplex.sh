@@ -1,6 +1,7 @@
 #! /bin/bash
 
 ## run_cplex.sh - for running standard benchmark experiments using CPLEX
+# @todo allow other options to be added at the end
 
 CPLEX_FIELDS="Objective runtime Nodes"
 
@@ -67,9 +68,11 @@ if ! [ -x $cplex_exec ]; then
     exit 1
 fi
 
+echo "cplex is $cplex_exec"
+
 output_dir=Raw_Output-$output_name
 mkdir $output_dir
 
 $exec_script $input_dir/ $output_dir/ $options_file $fields_file "$cplex_exec" > $output_name.csv
 
-#  [Last modified: 2019 05 18 at 10:28:03 GMT]
+#  [Last modified: 2019 06 28 at 20:23:06 GMT]
