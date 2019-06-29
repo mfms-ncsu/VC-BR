@@ -4,7 +4,7 @@ benchmark_experiments.py - runs experiments on all files in a directory;
                            configurations to be used and fields to put in the output
                            are specified in config files;
                            raw output is put into Raw_Output-xxx
-see also run_configs.sh and run_cplex.sh
+this is a utility called from run_configs.sh and run_cplex.sh
 """
 
 import argparse
@@ -156,8 +156,13 @@ if __name__ == '__main__':
                 if succeeded:
                     process_output(output_file, option, fields, results)
             else:
-                error_stream = open(error_filename, 'a')
-                error_stream.write("\n** Error: output file ({}) already exists!\n".format(output_file))
+                # if the file already exists, process it anyhow
+                # this allows for reruns with more options or more instances,
+                # while old information is still put into the spreadsheet
+                sys.stderr.write("** file '{}' already exists, no need to rerun\n"
+                                 .format(output_file))
+                process_output(output_file, option, fields, results)
+
 
         # print results
         field_string = ""
@@ -168,4 +173,4 @@ if __name__ == '__main__':
             field_string = ",".join([field_string, option_string])
         print("{}{}".format(extension_omitted(file_name), field_string))
 
-#  [Last modified: 2019 06 28 at 20:17:02 GMT]
+#  [Last modified: 2019 06 29 at 21:51:48 GMT]
