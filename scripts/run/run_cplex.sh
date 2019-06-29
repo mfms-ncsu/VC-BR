@@ -1,6 +1,8 @@
 #! /bin/bash
 
 ## run_cplex.sh - for running standard benchmark experiments using CPLEX
+## requires that benchmark_experiments.py be present in the same directory.
+#
 # @todo allow other options to be added at the end
 
 CPLEX_FIELDS="Objective runtime Nodes"
@@ -31,6 +33,12 @@ if [ $# -lt 1 ] || [ $# -gt 2 ]; then
 fi
 input_dir=$1
 output_name=`basename $input_dir`
+csv_output=$output_name.csv
+if [ -e $csv_output ]; then
+    alternate_name=$output_name-$$.csv
+    echo "*** warning: file $csv_output exists, using $alternate_name instead"
+    csv_output=$alternate_name
+fi
 
 shift
 if [ $# -gt 0 ]; then
@@ -73,6 +81,6 @@ echo "cplex is $cplex_exec"
 output_dir=Raw_Output-$output_name
 mkdir $output_dir
 
-$exec_script $input_dir/ $output_dir/ $options_file $fields_file "$cplex_exec" > $output_name.csv
+$exec_script $input_dir/ $output_dir/ $options_file $fields_file "$cplex_exec" > $csv_output
 
-#  [Last modified: 2019 06 28 at 20:23:06 GMT]
+#  [Last modified: 2019 06 29 at 22:48:47 GMT]
