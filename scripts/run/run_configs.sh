@@ -1,6 +1,7 @@
 #! /bin/bash
 
 ## run_configs.sh - for running standard benchmark experiments using the Akiba-Iwata solver
+##                  uses benchmark_experiments.py, which must be in the same directory.
 
 CONFIG_FILE=all_configs.txt
 CSV_FIELDS=useful_fields.txt
@@ -20,6 +21,9 @@ function usage {
     echo " creates the following in the *current* directory:"
     echo "    - Raw_Output-INPUT_DIRECTORY, where all output files go"
     echo "    - INPUT_DIRECTORY.csv, a csv file summarizing the results"
+    echo " - can be run multiple times with added files or options:"
+    echo "   runs already done will be skipped if corresponding raw output file is detected"
+    echo "   but data from the earlier run *will still be in the csv file*, which is given a new name"
 }
 
 # grab absolute path to this script
@@ -104,4 +108,6 @@ java_command="java -Xss1g -Xms4g -cp $java_exec_dir Main"
 
 $exec_script $input_dir/ $output_dir/ $options_file $config_dir/$CSV_FIELDS "$java_command" > $csv_output
 
-#  [Last modified: 2019 06 27 at 14:07:58 GMT]
+echo "*** Output is in $csv_output ***"
+
+#  [Last modified: 2019 06 29 at 21:53:00 GMT]
