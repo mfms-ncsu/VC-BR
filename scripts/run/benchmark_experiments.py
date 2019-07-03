@@ -124,8 +124,8 @@ if __name__ == '__main__':
     error_filename = ''.join([args.output_dir, '00-', directory_base(args.input_dir),
                               '-', ERROR_LOG_SUFFIX])
     
-    # process files
-    file_list = [ f for f in os.listdir(args.input_dir) ]
+    # process files - need to sort directory; some python implementations don't
+    file_list = [ f for f in sorted(os.listdir(args.input_dir)) ]
     for file_name in file_list:
         sys.stderr.write("*** {}\n".format(file_name))
         if not os.path.isfile(os.path.join(args.input_dir, file_name)):
@@ -173,4 +173,4 @@ if __name__ == '__main__':
             field_string = ",".join([field_string, option_string])
         print("{}{}".format(extension_omitted(file_name), field_string))
 
-#  [Last modified: 2019 06 29 at 21:51:48 GMT]
+#  [Last modified: 2019 07 01 at 21:08:32 GMT]

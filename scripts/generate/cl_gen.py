@@ -25,18 +25,19 @@ def parse_arguments():
     parser.add_argument("-d", "--avg_deg", help = "average degree (floating point)",
                         type = float)
     parser.add_argument("-md", "--min_deg",
-                        help = "desired miminum degree of a vertex",
+                        help = "desired miminum degree of a vertex (default 1)",
                         type = int)
     parser.add_argument("-MD", "--max_deg",
-                        help = "desired maximum degree of a vertex",
+                        help = "desired maximum degree of a vertex (default n-1)",
                         type = int)
     parser.add_argument("-n", "--num_vertices",
                         help = "number of vertices, must be present"
                         + " if degree arguments are specified (otherwise these are ignored)",
                         type = int)
     parser.add_argument("--dist", help = "degree distribution, one of "
-                        + "'uniform' (default), 'normal', 'exponential', 'reverse_exp'"
-                        + "; the latter favors high degree vertices instead of low")
+                        + "'uniform' (default)"
+                        + ", 'spike' (very few vertices at the extremes, normal distrbution)"
+                        )
     args = parser.parse_args()
     return args
 
@@ -63,6 +64,12 @@ def uniform(n, min_deg, max_deg):
         degree_list.append(random.randint(min_deg, max_deg))
     return degree_list
 
+def spike(n, min_deg, max_deg, avg_deg):
+    degree_list = (n - 2) * [avg_deg]
+    degree_list.append(min_deg)
+    degree_list.append(max_deg)
+    return degree_list
+          
 if __name__ == '__main__':
     args = parse_arguments()
     random.seed(args.seed)
@@ -84,11 +91,14 @@ if __name__ == '__main__':
         avg_deg = (min_deg + max_deg) / 2
         if args.avg_deg:
             avg_deg = args.avg_deg
-        degree_list = uniform(args.num_vertices, min_deg, max_deg)
+        if args.dist == "uniform":
+            degree_list = uniform(args.num_vertices, min_deg, max_deg)
+        elif args.dist == "spike":
+            degree_list = spike(args.num_vertices, min_deg, max_deg, avg_deg)
     else:
         sys.stderr.write("Warning: no degree info given, reading from file or stdin\n")
         degree_list = read_degrees(in_stream)
     G = nx.expected_degree_graph(degree_list, args.seed, False)
     write_graph(out_stream, G, args.seed)
 
-#  [Last modified: 2019 06 28 at 16:43:52 GMT]
+#  [Last modified: 2019 07 03 at 16:19:15 GMT]

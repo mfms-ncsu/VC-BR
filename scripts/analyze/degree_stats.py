@@ -13,7 +13,7 @@ OUTPUT_PREFIX = "z_ds-"         # put degree stats files at the end of a directo
 INSTANCE_HEADER = "00-Instance" # standard header for problem instance to allow merging
 VERTEX_HEADER = "n"
 EDGE_HEADER = "m"
-DEFAULT_STAT_LIST=["min", "med", "mean", "max", "stdev","spread", "nad"]
+DEFAULT_STAT_LIST=["min", "med", "mean", "max", "stdev", "spread", "nad"]
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Read graphs in snap format and"
@@ -28,10 +28,12 @@ def parse_arguments():
                         + ", where first and third are the first and third quartile"
                         + ", respectively"
                         + ", iqrt is the interquartile ratio = (third - first) / median"
-                        + ", spread = lg(max / min) + stdev / median"
+                        + ", top and bottom are top and bottom percentiles determined by the -p parameter"
+                        + ", spread = lg(top / bottom) + stdev / median"
                         + ", and nad = 'normalized average degree'"
                         + " Default is {}".format(','.join(DEFAULT_STAT_LIST))
                         )
+    parser.add_argument("-p", "--percentile", type = int, help = "percentile used to calculate top and bottom (default 5)", default = 5)
     parser.add_argument("-M", "--max_degree", dest="max_degree", type=int, default=200,
                         help="maximum degree to be used when normalizing (nad), i.e., "
                         + "actual average degree is mapped to [1..max_degree]"
@@ -105,15 +107,19 @@ def weighted_element(data, position):
 are the first and third quartiles in data
 @param data a sorted list of data elements
 """
-def quartiles(data):
+def percentiles(data, percent):
     last_index = len(data) - 1
     first_quartile_index = last_index / 4
+    bottom_percentile_index = last_index * percent / 100
+    top_percentile_index = last_index - last_index * percent / 100
     median_index = last_index / 2
-    third_quartile_index = 3 * last_index / 4 
+    third_quartile_index = 3 * last_index / 4
+    bottom_percentile = weighted_element(data, bottom_percentile_index)
     first_quartile = weighted_element(data, first_quartile_index)
     median = weighted_element(data, median_index)
     third_quartile = weighted_element(data, third_quartile_index)
-    return (first_quartile, median, third_quartile)
+    top_percentile = weighted_element(data, top_percentile_index)
+    return bottom_percentile, first_quartile, median, third_quartile, top_percentile
 
 """
 @return the normalized average degree, based on the command line arguments
@@ -141,17 +147,21 @@ def write_statistics(instream, outstream, instance, stat_list):
     maximum = degree_sequence[-1]
     mean = statistics.mean(degree_sequence)
     stdev = statistics.stdev(degree_sequence)
-    quarts = quartiles(degree_sequence)
+    bottom, first_quartile, median, third_quartile, top = percentiles(degree_sequence, args.percentile)
     output_list = [instance, vertices, edges]
     for stat in stat_list:
         if stat == "min":
             output_list.append(minimum)
         elif stat == "med":
-            output_list.append(quarts[1])
+            output_list.append(median)
+        elif stat == "bottom":
+            output_list.append(bottom)
         elif stat == "first":
-            output_list.append(quarts[0])
+            output_list.append(first_quartile)
         elif stat == "third":
-            output_list.append(quarts[2])
+            output_list.append(third_quartile)
+        elif stat == "top":
+            output_list.append(top)
         elif stat == "max":
             output_list.append(maximum)
         elif stat == "mean":
@@ -159,12 +169,14 @@ def write_statistics(instream, outstream, instance, stat_list):
         elif stat == "stdev":
             output_list.append(stdev)
         elif stat == "iqrt":
-            output_list.append((quarts[2] - quarts[0]) / quarts[1])
+            output_list.append((third_quartile - first_quartile) / median)
         elif stat == "spread":
-            if minimum == 0 or quarts[1] == 0:
-                output_list.appand(0)
+            if minimum == 0 or median == 0:
+                # something's wrong
+                output_list.append(-1)
             else:
-                output_list.append(math.log2(maximum / minimum) + stdev / quarts[1])
+                output_list.append(math.log2(top / bottom)
+                                   + stdev / median)
         elif stat == "nad":
             output_list.append(normalized_degree(mean, vertices))
         else:
@@ -237,4 +249,4 @@ if __name__ == '__main__':
     else:
         print("{} is not a file or a directory")
         
-#  [Last modified: 2019 06 25 at 12:18:01 GMT]
+#  [Last modified: 2019 07 03 at 19:41:50 GMT]
