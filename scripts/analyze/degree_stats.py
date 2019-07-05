@@ -24,7 +24,7 @@ def parse_arguments():
                         + " or a directory containing such files")
     parser.add_argument("-s", "--stats", dest="stats",
                         help="a comma separated list of statistics to print, options are:"
-                        + " min, med, mean, max, stdev, first, third, iqrt, spread, nad"
+                        + " min, med, mean, max, stdev, first, third, iqrt, bottom, top, spread, nad"
                         + ", where first and third are the first and third quartile"
                         + ", respectively"
                         + ", iqrt is the interquartile ratio = (third - first) / median"
@@ -249,4 +249,4 @@ if __name__ == '__main__':
     else:
         print("{} is not a file or a directory")
         
-#  [Last modified: 2019 07 03 at 19:41:50 GMT]
+#  [Last modified: 2019 07 04 at 22:18:38 GMT]

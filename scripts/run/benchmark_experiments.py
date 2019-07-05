@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 """
-benchmark_experiments.py - runs experiments on all files in a directory;
+benchmark_experiments.py - runs experiments on all files in a given directory;
                            configurations to be used and fields to put in the output
                            are specified in config files;
-                           raw output is put into Raw_Output-xxx
+                           raw output is put in a directory specified by the user
 this is a utility called from run_configs.sh and run_cplex.sh
 """
 
@@ -173,4 +173,4 @@ if __name__ == '__main__':
             field_string = ",".join([field_string, option_string])
         print("{}{}".format(extension_omitted(file_name), field_string))
 
-#  [Last modified: 2019 07 01 at 21:08:32 GMT]
+#  [Last modified: 2019 07 04 at 20:11:18 GMT]
