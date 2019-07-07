@@ -45,8 +45,8 @@ output_name=`basename $input_dir`
 csv_output=$output_name.csv
 if [ -e $csv_output ]; then
     alternate_name=$output_name-$$.csv
-    echo "*** warning: file $csv_output exists, using $alternate_name instead"
-    csv_output=$alternate_name
+    echo "*** warning: file $csv_output exists, saving it as $alternate_name"
+    mv $csv_output $alternate_name
 fi
 
 exec_script=$script_dir/$SCRIPT
@@ -108,6 +108,6 @@ java_command="java -Xss1g -Xms4g -cp $java_exec_dir Main"
 
 $exec_script $input_dir/ $output_dir/ $options_file $config_dir/$CSV_FIELDS "$java_command" > $csv_output
 
-echo "*** Output is in $csv_output ***"
+echo "*** Output is in $csv_output; previous output, if any, saved as '$alternate_name' ***"
 
-#  [Last modified: 2019 06 29 at 21:53:00 GMT]
+#  [Last modified: 2019 07 07 at 20:02:29 GMT]

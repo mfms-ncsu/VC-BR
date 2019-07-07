@@ -16,7 +16,6 @@ fold2Count
 lpCount
 twinCount
 deskCount
-diamondCount
 unconfinedCount
 funnelCount
 packingCount
@@ -38,12 +37,12 @@ deskAllCalls
 unconfinedAllCalls
 funnelAllCalls
 packingAllCalls
-trivialCount
-cliqueCount
-lpCount
-cycleCount
-cliqueTime
-cycleTime
+trivialLBCount
+cliqueLBCount
+lpLBCount
+cycleLBCount
+cliqueLBTime
+cycleLBTime
 num_leftcuts
 root_lb
 Options
