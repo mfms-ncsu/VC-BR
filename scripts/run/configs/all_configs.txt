@@ -10,6 +10,7 @@
 --deg1 --fold2 --desk --twin --funnel --unconfined --clique_lb, Cheap+FU
 --deg1 --dom --fold2 --LP --funnel --desk --twin --clique_lb --lp_lb, All-U
 --deg1 --dom --fold2 --clique_lb, r0_l1
+--deg1 --dom --fold2 --unconfined --clique_lb, r0_l1+U
 --deg1 --dom --fold2 --LP --clique_lb --lp_lb --cycle_lb, r1_l4
 --deg1 --dom --fold2 --LP --unconfined --twin --funnel --desk  --clique_lb --lp_lb --cycle_lb, r2_l4
 --deg1 --dom --fold2 --LP --unconfined --twin --funnel --desk  --packing --clique_lb --lp_lb --cycle_lb, r3_l4
