@@ -609,14 +609,42 @@ public class VCSolver {
         }
     }
 
+    /**
+     * Generic data structure for all reductions that involve contractions,
+     * such as fold2, twin, desk, and funnel
+     */
     abstract class Modified {
-
+        /**
+         * number of (additional) vertices that will be in a solution as the
+         * result of the reduction; in case of an alternative structure,
+         * either |A| or |B| vertices will be added to whatever solution is
+         * found for the reduced graph; this is useful when computing upper
+         * bounds
+         */
         int add;
+        /**
+         * set of vertices removed/replaced by the reduction
+         */
         int[] removed;
+        /**
+         * set of new vertices introduced by the reduction
+         */
         int[] vs;
+        /**
+         * adjacencies among removed vertices before the reduction, so that
+         * the reduction can be easily 'undone'
+         */
         int[][] oldAdj;
 
+        /**
+         * does all the obvious initializations
+         */
         Modified(int add, int[] removed, int[] vs, int[][] newAdj) {
+            // in case of fold2 involving v with neighbors u_0 and u_1
+            //      add = 1
+            //      removed = {v, u_1}
+            //      vs = neighbors of u_0 and u_1
+            //      newAdj[i] = neighbors of vs[i] in the contracted graph
             this.add = add;
             this.removed = removed;
             this.vs = vs;
@@ -640,6 +668,9 @@ public class VCSolver {
             this.vs = vs;
         }
 
+        /**
+         * restores the <em>graph</em> to its state before the reduction was applied
+         */
         void restore() {
             current_value -= add;
             remaining_vertices += removed.length;
@@ -668,6 +699,12 @@ public class VCSolver {
             }
         }
 
+        /**
+         * when the reduced graph is solved, reverse() computes the solution
+         * with respect to the original graph and updates the global solution
+         * vector; this is abstract because the semantics depends on the
+         * reduction being performed
+         */
         abstract void reverse(int[] curr_solution);
 
     }
@@ -684,7 +721,15 @@ public class VCSolver {
 
         @Override
         void reverse(int[] curr_solution) {
+            // in case of fold2 involving v and its neighbors u_0 and u_1,
+            // with u_0 and u_1 contracted to w, and w using the index of u_0
+            //    removed = {v, u_1}
+            //    vs = w and all originally undecided neighbors of u_0 and u_1
+            //    curr_solution[i] = status of vs[i]
             int k = removed.length / 2;
+            // fold2: if w is not in the solution, include v and exclude u_1,
+            // otherwise exclude v and include u_1
+            // note that, since w is an alias for u_0, its status is already correct
             if (curr_solution[vs[0]] == 0) {
                 for (int i = 0; i < k; i++) {
                     curr_solution[removed[i]] = 1;
@@ -762,6 +807,11 @@ public class VCSolver {
 
     int[] modTmp;
 
+    /**
+     * performs a fold (contraction), eventually creating an instance of Fold
+     * @param S the set of vertices whose neighbors are to be contracted
+     * @param NS the set of neighbors to be contracted
+     */
     void fold(int[] S, int[] NS) {
         Debug.check(NS.length == S.length + 1);
         int[] removed = new int[S.length * 2];
@@ -772,20 +822,27 @@ public class VCSolver {
             removed[S.length + i] = NS[1 + i];
         }
         int s = NS[0];
+        // in case of fold2 involving v and neighbors u_0 and u_1
+        // removed[0] = v, removed[1] = u_1, s = u_0
         used.clear();
         for (int v : S) {
             used.add(v);
         }
+        // fold2: used = {v}
         int[] tmp = modTmp;
         int p = 0;
         for (int v : NS) {
             Debug.check(!used.get(v));
-            for (int u : adj[v]) {
-                if (curr_solution[u] < 0 && used.add(u)) {
+            for ( int u : adj[v] ) {
+                if ( curr_solution[u] < 0 && used.add(u) ) {
+                    // adds u to tmp only if it's not in used
                     tmp[p++] = u;
                 }
             }
         }
+        // fold2: tmp = neighbors(u_0) U neighbors(u_1),
+        //        used = {v} U neighbors(u_0) U neighbors(u_1)
+        //        p = tmp.length
         int[][] newAdj = new int[p + 1][];
         newAdj[0] = copyOf(tmp, p);
         sort(newAdj[0]);
@@ -798,25 +855,35 @@ public class VCSolver {
         for (int v : NS) {
             used.add(v);
         }
-        for (int i = 0; i < newAdj[0].length; i++) {
+        // fold2: used = {v, u_0, u_1}, vs[0] = u_0
+        //        adj[vs[0]] = neighbors(u_0) U neighbors(u_1)
+        // effectively, we're using u_0 as a placeholder for the new vertex
+        for ( int i = 0; i < newAdj[0].length; i++ ) {
             int v = newAdj[0][i];
             p = 0;
             boolean add = false;
-            for (int u : adj[v]) {
-                if (curr_solution[u] < 0 && !used.get(u)) {
-                    if (!add && s < u) {
+            for ( int u : adj[v] ) {
+                if ( curr_solution[u] < 0 && ! used.get(u) ) {
+                    if ( ! add && s < u ) {
+                        // a little bizarre: sorting is used somehow to avoid duplication
                         tmp[p++] = s;
                         add = true;
                     }
                     tmp[p++] = u;
                 }
             }
-            if (!add) {
+            if ( ! add ) {
                 tmp[p++] = s;
             }
             vs[1 + i] = v;
             newAdj[1 + i] = copyOf(tmp, p);
         }
+        // fold2: undecided neighbors of u_0 and u_1 need to know that they
+        // are adjacent to vs[0] and added to vs, so
+        //   S = {v}
+        //   removed = {v, u_1}
+        //   vs[0] = u_0, vs[i], i > 0 is an undecided neighbor of u_0 or u_1
+        //   newAdj[i] = neighbors of vs[i], including u_0
         modifieds[modifiedN++] = new Fold(S.length, removed, vs, newAdj);
     }
 
@@ -1242,6 +1309,10 @@ loop :
         }
     }
 
+    /**
+     * performs all possible fold2 reductions; if the neighbors of any
+     * degree-2 vertex are adjacent, a dominance reduction takes place instead
+     */
     boolean fold2Reduction() {
         try (Stat stat = new Stat("reduce_fold2")) {
             if (DEBUG == 3) {
@@ -1282,7 +1353,7 @@ loop :
                     fold(new int[]{v}, copyOf(tmp, 2));
                     num_folded += 3;
                 }
-            }// end loop
+            } // end loop
 
             if (DEBUG >= 3 && depth <= maxDepth && oldn != remaining_vertices) {
                 debug("fold2: %d -> %d%n", oldn, remaining_vertices);
@@ -2651,7 +2722,7 @@ loop :
                     packing2.add(copyOf(tmp, p));
                 }
                 vc.packing = packing2;
-            }
+            } // packing
 
             // modified graphs (fold2, twin, funnel, desk)
             {
@@ -2688,7 +2759,7 @@ loop :
                     }
                     vc.modifieds[j] = mod;
                 }
-            }
+            } // modified graph
 
             vc.depth = depth + (vss.length > 1 ? 1 : 0);
 
@@ -2726,7 +2797,7 @@ loop :
                 curr_solution2[vss2[i][j]] = vc.optimal_solution[j];
                 Debug.check(vc.optimal_solution[j] == 0 || vc.optimal_solution[j] == 1);
             }
-        }
+        } // for each component i
 
         if (optimal_value > sum) {
             if (DEBUG >= 2 && rootDepth <= maxDepth) {
@@ -3068,4 +3139,4 @@ loop :
 
 }
 
-//  [Last modified: 2019 06 18 at 13:36:19 GMT]
+//  [Last modified: 2019 07 10 at 16:35:04 GMT]
