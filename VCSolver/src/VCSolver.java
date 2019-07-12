@@ -855,8 +855,8 @@ public class VCSolver {
         for (int v : NS) {
             used.add(v);
         }
-        // fold2: used = {v, u_0, u_1}, vs[0] = u_0
-        //        adj[vs[0]] = neighbors(u_0) U neighbors(u_1)
+        // fold2: used = {v, u_0, u_1}, vs[0] = u_0 = s
+        //        newAdj[0] = neighbors(u_0) U neighbors(u_1), sorted
         // effectively, we're using u_0 as a placeholder for the new vertex
         for ( int i = 0; i < newAdj[0].length; i++ ) {
             int v = newAdj[0][i];
@@ -865,7 +865,7 @@ public class VCSolver {
             for ( int u : adj[v] ) {
                 if ( curr_solution[u] < 0 && ! used.get(u) ) {
                     if ( ! add && s < u ) {
-                        // a little bizarre: sorting is used somehow to avoid duplication
+                        // sorting is used to avoid duplication
                         tmp[p++] = s;
                         add = true;
                     }
@@ -3139,4 +3139,4 @@ loop :
 
 }
 
-//  [Last modified: 2019 07 10 at 16:35:04 GMT]
+//  [Last modified: 2019 07 10 at 17:19:38 GMT]

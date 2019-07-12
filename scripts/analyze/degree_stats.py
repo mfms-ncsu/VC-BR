@@ -1,7 +1,9 @@
 #! /usr/bin/env python3
 
-## degree_stats.py - given a graph in snap format as input, calculates a
-# variety of statistics on the degree sequence
+"""
+ degree_stats.py - given a graph in snap format as input, calculates a
+ variety of statistics on the degree sequence
+"""
 
 import argparse
 import sys
@@ -13,7 +15,7 @@ OUTPUT_PREFIX = "z_ds-"         # put degree stats files at the end of a directo
 INSTANCE_HEADER = "00-Instance" # standard header for problem instance to allow merging
 VERTEX_HEADER = "n"
 EDGE_HEADER = "m"
-DEFAULT_STAT_LIST=["min", "med", "mean", "max", "stdev", "spread", "nad"]
+DEFAULT_STAT_LIST=["min", "bottom", "med", "mean", "top", "max", "stdev", "nad"]
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Read graphs in snap format and"
@@ -249,4 +251,4 @@ if __name__ == '__main__':
     else:
         print("{} is not a file or a directory")
         
-#  [Last modified: 2019 07 04 at 22:18:38 GMT]
+#  [Last modified: 2019 07 12 at 18:19:36 GMT]
