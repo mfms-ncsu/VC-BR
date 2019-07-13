@@ -1,5 +1,7 @@
 --clique_lb, None
 --deg1 --clique_lb, Deg1
+--fold2 --clique_lb, Fold2
+--deg1 --fold2 --clique_lb, DF2
 --deg1 --dom --clique_lb, DD
 --deg1 --fold2 --desk --twin --clique_lb, Cheap
 --LP --clique_lb --lp_lb, LP

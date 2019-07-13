@@ -4,6 +4,9 @@
 \#*
 *.bak
 
+# python-related
+__pycache__/
+
 # Compiled class file
 *.class
 
