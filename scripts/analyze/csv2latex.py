@@ -70,7 +70,7 @@ def _csv_to_latex(in_stream, out_stream):
             for line in in_stream.readlines():
                 tokens = [token.strip() for token in line.split(',')]
                 tokens = list(map(_format_token, tokens))
-                new_line = " & ".join(tokens) + ' \\\hline' + '\n'
+                new_line = " & ".join(tokens) + r' \\ \hline' + '\n'
                 out_stream.write(new_line)
 
 if __name__ == '__main__':
@@ -85,4 +85,4 @@ if __name__ == '__main__':
         out_stream = sys.stdout
     _csv_to_latex(in_stream, out_stream)
 
-#  [Last modified: 2019 07 18 at 19:27:32 GMT]
+#  [Last modified: 2019 07 18 at 19:39:09 GMT]
