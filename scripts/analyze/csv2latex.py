@@ -30,7 +30,7 @@ def add_commas(integer):
     """
     if integer < 1000:
         return str(integer)
-    return add_commas(integer // 1000) + "," + str(integer % 1000)
+    return add_commas(integer // 1000) + "," + "%03d" % (integer % 1000)
 
 def _convert(string):
     """
@@ -85,4 +85,4 @@ if __name__ == '__main__':
         out_stream = sys.stdout
     _csv_to_latex(in_stream, out_stream)
 
-#  [Last modified: 2019 07 18 at 19:39:09 GMT]
+#  [Last modified: 2019 07 19 at 01:21:26 GMT]
