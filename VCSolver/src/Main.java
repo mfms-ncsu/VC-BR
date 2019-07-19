@@ -14,7 +14,7 @@ public class Main {
                                                 // for now
     public static final String MODIFICATION_DATE = "June 2019";
     
-    @Option(abbr = 'b', usage = "0:random, 1:mindeg, 2:maxdeg")
+    @Option(abbr = 'b', usage = "0: random, 1: mindeg, 2: maxdeg")
     public static int branching = 2;
 
     @Option(abbr = 'o')
@@ -26,16 +26,16 @@ public class Main {
     @Option(abbr = 't', usage = "timeout in seconds")
     public static int timeout = 3600;
 
-    @Option(name = "trace", usage = "0: no trace, 1:short version without solution vectors, 2: full trace with solution vectors")
+    @Option(name = "trace", usage = "0: no trace, 1: short version without solution vectors, 2: full trace with solution vectors")
     public static int trace = 0;
 
     @Option(name = "quiet", usage = "Don't print progress messages (useful if running with detached screen)")
     public static boolean quiet = false;
 
-    @Option(name = "root", usage = "Only process root node")
+    @Option(name = "root", usage = "Only process root node -- no branchine")
     public static boolean only_root = false;
 
-    @Option(name = "show_solution", usage = "Flag to enable printing of solution vector")
+    @Option(name = "show_solution", usage = "Enable printing of solution vector")
     public static boolean show_solution = false;
 
     // Lower bound options
@@ -77,41 +77,41 @@ public class Main {
     public static boolean packing_reduction = false;
 
     // All flag
-    @Option(name = "all_red", usage = "Flag to enable all reductions")
+    @Option(name = "all_red", usage = "Enable all reductions except packing, equivalent to old '-r2 -l3'")
     public static boolean all_reductions = false;
 
     // Preprocess
-    @Option(name = "preprocess", usage = "Flag that enables preprocessing to determine which reductions are enabled. Any user selected reductions are ignored. Currently, only the deg1, dom, and LP reductions are considered.")
+    // @Option(name = "preprocess", usage = "Flag that enables preprocessing to determine which reductions are enabled. Any user selected reductions are ignored. Currently, only the deg1, dom, and LP reductions are considered.")
     public static boolean preprocess_reductions = false;
 
     // Selective reductions based on measures
-    @Option(name = "selective", usage = "If the deg1, dom, or LP reductions are enabled, then only apply them if some threshold is met.")
+    // @Option(name = "selective", usage = "If the deg1, dom, or LP reductions are enabled, then only apply them if some threshold is met.")
     public static boolean selective = false;
 
     // Thresholds
-    @Option(name = "oc", usage = "Sets the oc threshold to enable lp reduction, i.e., if the oc is < value then use lp")
+    // @Option(name = "oc", usage = "Sets the oc threshold to enable lp reduction, i.e., if the oc is < value then use lp")
     public static double oc_threshold = 1.00;
 
-    @Option(name = "dv", usage = "Sets the dv threshold to enable deg1 and dominance reductions, i.e., if the dv is > value then use deg1 and dominance")
+    // @Option(name = "dv", usage = "Sets the dv threshold to enable deg1 and dominance reductions, i.e., if the dv is > value then use deg1 and dominance")
     public static double dv_threshold = 0.00;
 
-    @Option(name = "min_density", usage = "Sets the minumum density threshold to enable deg1 and dominance reductions, i.e., if the density is > value then use deg1 and dominance")
+    // @Option(name = "min_density", usage = "Sets the minumum density threshold to enable deg1 and dominance reductions, i.e., if the density is > value then use deg1 and dominance")
     public static double min_density_threshold = 0.00;
 
-    @Option(name = "max_density", usage = "Sets the maximum density threshold to enable deg1 and dominance reductions, i.e., if the density is < value then use deg1 and dominance")
+    // @Option(name = "max_density", usage = "Sets the maximum density threshold to enable deg1 and dominance reductions, i.e., if the density is < value then use deg1 and dominance")
     public static double max_density_threshold = 1.00;
 
     // General selective reduction options
-    @Option(name = "disable", usage = "Disable reductions if efficiency is below some threshold")
+    // @Option(name = "disable", usage = "Disable reductions if efficiency is below some threshold")
     public static boolean disable = false;
 
-    @Option(name = "tiered_disable", usage = "Disable reductions if efficiency is below some threshold")
+    // @Option(name = "tiered_disable", usage = "Disable reductions if efficiency is below some threshold")
     public static boolean tiered_disable = false;
 
-    @Option(name = "density_skip", usage = "Skip all reductions except degree1, dominance, and packing if the density is greater than 0.5")
+    // @Option(name = "density_skip", usage = "Skip all reductions except degree1, dominance, and packing if the density is greater than 0.5")
     public static boolean density_skip = false;
 
-    @Option(name = "size", usage = "Graph size threshold to enable reductions (1.00 means use reductions from the start")
+    // @Option(name = "size", usage = "Graph size threshold to enable reductions (1.00 means use reductions from the start")
     public static double size_skip = 1.00;
 
     void printVersionInfo() {
@@ -450,4 +450,4 @@ public class Main {
     }
 }
 
-//  [Last modified: 2019 06 13 at 15:49:25 GMT]
+//  [Last modified: 2019 07 19 at 20:02:24 GMT]

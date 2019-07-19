@@ -2,7 +2,7 @@
 
 """
 Simple conversion from a csv file to &-separated fields suitable for latex tables.
-A few features, such as markers for bold, italic, and bold-italic text (!,+,*)
+A few features, such as markers for bold, italic, and bold-italic text (!,_,*)
 and comma separation for large integers
 """
 
@@ -11,7 +11,7 @@ import sys
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description = "converts csv to latex tabular format"
-                                     + "; prefix ! = bold, + = italic, * = bold-italic")
+                                     + "; prefix ! = bold, _ = italic, * = bold-italic")
     parser.add_argument("input_file", help = "a csv file")
     parser.add_argument("-o", "--output", help = "output file, prints to stdout if none given")
     args = parser.parse_args()
@@ -45,7 +45,7 @@ def _format_token(token):
     """
     Wrap a token with formatting.
      ! -> \textbf{}
-     + -> \emph{}
+     _ -> \emph{}
      * -> \textbf{\emph{}}
     also, put an escape before each _
     """
@@ -53,7 +53,7 @@ def _format_token(token):
         return " "
     if token[0] == "!":
         return r'\textbf{' + _convert(token[1:]) + r'}'
-    elif token[0] == '+':
+    elif token[0] == '_':
         return r'\emph{' + _convert(token[1:]) + r'}'
     elif token[0] == '*':
         return r'\textbf{\emph{' + _convert(token[1:]) + r'}}'
@@ -85,4 +85,4 @@ if __name__ == '__main__':
         out_stream = sys.stdout
     _csv_to_latex(in_stream, out_stream)
 
-#  [Last modified: 2019 07 19 at 01:21:26 GMT]
+#  [Last modified: 2019 07 19 at 19:10:01 GMT]

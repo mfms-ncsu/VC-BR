@@ -374,8 +374,9 @@ public class VCSolver {
                               reduce_types[i] + "Count",
                               Stat.getCount("reduceN_" + reduce_types[i]));
         }
-        System.out.printf(COUNT_REPORT_FORMAT,
-                          "diamondCount", Stat.getCount("reduceN_diamond"));
+        // !!! omit for now, unless there's a clearer explanation !!!
+        // System.out.printf(COUNT_REPORT_FORMAT,
+        //                   "diamondCount", Stat.getCount("reduceN_diamond"));
     }
     public void printReduceCalls() {
         for (int i = 0; i < reduce_types.length; i++) {
@@ -3139,4 +3140,4 @@ loop :
 
 }
 
-//  [Last modified: 2019 07 10 at 17:19:38 GMT]
+//  [Last modified: 2019 07 19 at 20:06:34 GMT]
