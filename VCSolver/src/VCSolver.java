@@ -2126,7 +2126,7 @@ loop :
             debug("Performing rec on left child\n");
             //debug("Depth: %d\n", depth);
         }
-        nBranchings++;
+        // nBranchings++; // see rec()
         // process left child
         rec("= 1");
         if (TRACE > 0 && TRACE < 3) {
@@ -2152,6 +2152,9 @@ loop :
             }
             return;
         }
+        // not clear why this gets incremented here instead of a more obvious
+        // place, but that's what Iwata did
+        nBranchings++;
         if (mirrorN == 0) {
             used.clear();
             // make used = N[v]
@@ -2224,7 +2227,7 @@ loop :
             debug("Performing rec on right child\n");
             //debug("Depth: %d\n", depth);
         }
-        nBranchings++;
+        // nBranchings++; // see rec()
         // Process right child
         if ( TRACE > 0 && TRACE < 3) {
             System.out.format(" ^^ right_branch:       * %d\n", vertexID[v]);
@@ -3140,4 +3143,4 @@ loop :
 
 }
 
-//  [Last modified: 2019 07 19 at 20:06:34 GMT]
+//  [Last modified: 2019 07 20 at 15:51:10 GMT]

@@ -5,7 +5,7 @@
 #
 # @todo allow other options to be added at the end
 
-CPLEX_FIELDS="Objective runtime Nodes"
+CPLEX_FIELDS="value runtime num_branches iterations frac_cuts clique_cuts cover_cuts"
 
 function usage {
     echo "Usage: run_cplex.sh INPUT_DIRECTORY [TIME_LIMIT]"
@@ -83,4 +83,4 @@ mkdir $output_dir
 
 $exec_script $input_dir/ $output_dir/ $options_file $fields_file "$cplex_exec" > $csv_output
 
-#  [Last modified: 2019 06 29 at 22:48:47 GMT]
+#  [Last modified: 2019 07 20 at 13:08:46 GMT]

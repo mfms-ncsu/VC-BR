@@ -10,9 +10,8 @@ import tc.wata.util.*;
 import tc.wata.util.SetOpt.*;
 
 public class Main {
-    public static final String VERSION = "1.1"; // just to make something up,
-                                                // for now
-    public static final String MODIFICATION_DATE = "June 2019";
+    public static final String VERSION = "1.1.1";
+    public static final String MODIFICATION_DATE = "July 2019";
     
     @Option(abbr = 'b', usage = "0: random, 1: mindeg, 2: maxdeg")
     public static int branching = 2;
@@ -246,7 +245,7 @@ public class Main {
         // System.out.format("%s %f\n", "Root_dv     \t", root_dv);
 
         VCSolver vc = new VCSolver(adj, adj.length);
-        VCSolver.nBranchings = 1;
+        VCSolver.nBranchings = 0;
         VCSolver.nLeftCuts = 0;
 
         /**
@@ -256,18 +255,19 @@ public class Main {
         if (all_reductions) {
             clique_lb = true;
             lp_lb = true;
-            if (preprocess_reductions) {
-                if (root_dv > dv_threshold) {
-                    degree1_reduction = true;
-                    dominance_reduction = true;
-                } else {
-                    double root_oc = getOC();
-                    if (root_oc < oc_threshold) {
-                        lp_reduction = true;
-                    }
-                    System.out.format("%s %f\n", "Root_oc \t", root_oc);
-                }
-            } else {
+            // if (preprocess_reductions) {
+            //     if (root_dv > dv_threshold) {
+            //         degree1_reduction = true;
+            //         dominance_reduction = true;
+            //     } else {
+            //         double root_oc = getOC();
+            //         if (root_oc < oc_threshold) {
+            //             lp_reduction = true;
+            //         }
+            //         System.out.format("%s %f\n", "Root_oc \t", root_oc);
+            //     }
+            // }
+            // else {
                 degree1_reduction = true;
                 dominance_reduction = true;
                 fold2_reduction = true;
@@ -277,28 +277,29 @@ public class Main {
                 funnel_reduction = true;
                 desk_reduction = true;
                 //packing_reduction = true;
-            }
-        } else if (preprocess_reductions) {
-            degree1_reduction = false;
-            dominance_reduction = false;
-            fold2_reduction = false;
-            lp_reduction = false;
-            unconfined_reduction = false;
-            twin_reduction = false;
-            funnel_reduction = false;
-            desk_reduction = false;
-            packing_reduction = false;
-            if (root_dv > dv_threshold) {
-                degree1_reduction = true;
-                dominance_reduction = true;
-            } else {
-                double root_oc = getOC();
-                if (root_oc < oc_threshold) {
-                    lp_reduction = true;
-                }
-                System.out.format("%s %f\n", "Root_oc \t", root_oc);
-            }
+            // }
         }
+        // else if (preprocess_reductions) {
+        //     degree1_reduction = false;
+        //     dominance_reduction = false;
+        //     fold2_reduction = false;
+        //     lp_reduction = false;
+        //     unconfined_reduction = false;
+        //     twin_reduction = false;
+        //     funnel_reduction = false;
+        //     desk_reduction = false;
+        //     packing_reduction = false;
+            // if (root_dv > dv_threshold) {
+            //     degree1_reduction = true;
+            //     dominance_reduction = true;
+            // } else {
+            //     double root_oc = getOC();
+            //     if (root_oc < oc_threshold) {
+            //         lp_reduction = true;
+            //     }
+            //     System.out.format("%s %f\n", "Root_oc \t", root_oc);
+            // }
+        // }
 
         VCSolver.DEGREE1_REDUCTION = degree1_reduction;
         VCSolver.DOMINANCE_REDUCTION = dominance_reduction;
@@ -450,4 +451,4 @@ public class Main {
     }
 }
 
-//  [Last modified: 2019 07 19 at 20:02:24 GMT]
+//  [Last modified: 2019 07 20 at 15:55:02 GMT]
