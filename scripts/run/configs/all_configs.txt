@@ -6,9 +6,10 @@
 --deg1 --fold2 --desk --twin --clique_lb, Cheap
 --LP --clique_lb --lp_lb, LP
 --deg1 --fold2 --desk --twin --clique_lb --LP --lp_lb, Cheap+LP
+--deg1 --fold2 --desk --twin --unconfined --clique_lb, Cheap+U
+--deg1 --fold2 --desk --twin --unconfined --LP --clique_lb --lp_lb, Cheap+LPU
 --deg1 --dom --fold2 --LP --unconfined --funnel --desk --twin --clique_lb --lp_lb, All
 --deg1 --fold2 --desk --twin --funnel --clique_lb, Cheap+F
---deg1 --fold2 --desk --twin --unconfined --clique_lb, Cheap+U
 --deg1 --fold2 --desk --twin --funnel --unconfined --clique_lb, Cheap+FU
 --deg1 --dom --fold2 --LP --funnel --desk --twin --clique_lb --lp_lb, All-U
 --deg1 --dom --fold2 --clique_lb, r0_l1
