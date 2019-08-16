@@ -1,0 +1,64 @@
+Akiba-Iwata branch and reduce solver, Version 1.1
+ modified by Yang Ho and Matthias Stallmann, June 2019
+reading the input graph...
+InputFile   	 /Users/mfms/OngoingResearch/2019-Vertex-Cover/for-alenex-all-table/blg-00250_050_40_05D00249_xx.txt
+Options     	:--deg1:--dom:--fold2:--LP:--unconfined:--funnel:--desk:--twin:--clique_lb:--lp_lb:-t60:--show_solution
+num_vertices        	             250
+num_edges           	            6250
+value               	             160
+runtime             	    36.095
+num_branches        	          214537
+Reduction Times (ms):
+deg1Time            	  1051.744
+domTime             	  1963.151
+fold2Time           	  2687.656
+lpTime              	  6114.224
+twinTime            	  2659.109
+deskTime            	  5174.373
+unconfinedTime      	  4131.171
+funnelTime          	  5139.404
+packingTime         	     0.000
+Vertices Reduced:
+deg1Count           	          322254
+domCount            	           25109
+fold2Count          	         6481239
+lpCount             	           14070
+twinCount           	           16306
+deskCount           	           52397
+unconfinedCount     	          190758
+funnelCount         	          295198
+packingCount        	               0
+diamondCount        	            6830
+Effective Reduction Calls:
+deg1Calls           	           76745
+domCalls            	           16826
+fold2Calls          	          301296
+lpCalls             	            2167
+twinCalls           	            2170
+deskCalls           	            6175
+unconfinedCalls     	           54105
+funnelCalls         	           96271
+packingCalls        	               0
+Total Reduction Calls:
+deg1AllCalls        	          739740
+domAllCalls         	          357620
+fold2AllCalls       	          693522
+lpAllCalls          	          312950
+twinAllCalls        	          392226
+deskAllCalls        	          390056
+unconfinedAllCalls  	          367055
+funnelAllCalls      	          310783
+packingAllCalls     	               0
+Effective Lower Bounds:
+trivialLBCount      	           19888
+cliqueLBCount       	           15707
+lpLBCount           	           71645
+cycleLBCount        	               0
+Lower Bound Times (ms):
+cliqueLBTime        	  2301.338
+cycleLBTime         	     0.000
+num_leftcuts        	               0
+root_lb             	             138
+solution	 _0110111101011010001110111100001101100001110010101011110010111110011111101110011110111101110100110001101111111010101001111110111111111110000001011101111101111010010110010011111101111110111101101010001001000110111011111100001101011111111001101010111110
+host_name	csc-usb-ethernet.csc.ncsu.edu
+date_time	Thu Jun 27 14:13:49 UTC 2019

@@ -2886,8 +2886,7 @@ loop :
                 //  - there were more than 100 vertices to begin with
                 //  - reductions have reduced the number of vertices
                 //    sufficiently, i.e., by at least a factor of SHRINK
-                //  - [the role of outputLP is not clear; it appears to be always
-                //     true]
+                //  - [the role of outputLP is not clear; it's false by default]
                 // Note: the main decompose takes place later in the code
                 if (n > 100 && n * SHRINK >= remaining_vertices && !outputLP && decompose()) {
                     if (DEBUG >= 2) {
@@ -3143,4 +3142,4 @@ loop :
 
 }
 
-//  [Last modified: 2019 07 20 at 15:51:10 GMT]
+//  [Last modified: 2019 08 14 at 19:29:29 GMT]

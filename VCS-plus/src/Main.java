@@ -31,7 +31,7 @@ public class Main {
     @Option(name = "quiet", usage = "Don't print progress messages (useful if running with detached screen)")
     public static boolean quiet = false;
 
-    @Option(name = "root", usage = "Only process root node -- no branchine")
+    @Option(name = "root", usage = "Only process root node -- no branching")
     public static boolean only_root = false;
 
     @Option(name = "show_solution", usage = "Enable printing of solution vector")
@@ -451,4 +451,4 @@ public class Main {
     }
 }
 
-//  [Last modified: 2019 07 20 at 15:55:02 GMT]
+//  [Last modified: 2019 08 14 at 19:24:51 GMT]

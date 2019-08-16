@@ -1,0 +1,64 @@
+Akiba-Iwata branch and reduce solver, Version 1.1
+ modified by Yang Ho and Matthias Stallmann, June 2019
+reading the input graph...
+InputFile   	 /Users/mfms/Git/vertex-cover/instances/small/r_64_256_1.txt
+Options     	:--deg1:--dom:--fold2:--LP:--unconfined:--funnel:--desk:--twin:--clique_lb:--lp_lb:-t900:--show_solution
+num_vertices        	              64
+num_edges           	             256
+value               	              43
+runtime             	     0.052
+num_branches        	              68
+Reduction Times (ms):
+deg1Time            	     0.384
+domTime             	     2.022
+fold2Time           	     3.989
+lpTime              	    10.246
+twinTime            	     1.493
+deskTime            	     5.528
+unconfinedTime      	    10.869
+funnelTime          	     7.259
+packingTime         	     0.000
+Vertices Reduced:
+deg1Count           	               8
+domCount            	               0
+fold2Count          	             937
+lpCount             	             124
+twinCount           	              15
+deskCount           	               0
+unconfinedCount     	             211
+funnelCount         	              46
+packingCount        	               0
+diamondCount        	               7
+Effective Reduction Calls:
+deg1Calls           	               2
+domCalls            	               0
+fold2Calls          	              81
+lpCalls             	              27
+twinCalls           	               3
+deskCalls           	               0
+unconfinedCalls     	              52
+funnelCalls         	              15
+packingCalls        	               0
+Total Reduction Calls:
+deg1AllCalls        	              32
+domAllCalls         	              28
+fold2AllCalls       	             246
+lpAllCalls          	             110
+twinAllCalls        	             165
+deskAllCalls        	             162
+unconfinedAllCalls  	             162
+funnelAllCalls      	              83
+packingAllCalls     	               0
+Effective Lower Bounds:
+trivialLBCount      	              23
+cliqueLBCount       	               7
+lpLBCount           	               1
+cycleLBCount        	               0
+Lower Bound Times (ms):
+cliqueLBTime        	     2.949
+cycleLBTime         	     0.000
+num_leftcuts        	               1
+root_lb             	              37
+solution	 _1011110110011011010110111101111111111110110101111010100010110100
+host_name	csc-usb-ethernet.csc.ncsu.edu
+date_time	Thu Jun 27 14:59:00 UTC 2019
