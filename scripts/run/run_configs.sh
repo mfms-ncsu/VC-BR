@@ -6,6 +6,7 @@
 CONFIG_FILE=all_configs.txt
 CSV_FIELDS=useful_fields.txt
 SCRIPT=benchmark_experiments.py
+VCSolver_PATH=VCS-plus
 
 function usage {
     echo "Usage: run_configs.sh INPUT_DIRECTORY [TIME_LIMIT] [TAG_1 ... TAG_k]"
@@ -89,7 +90,7 @@ done
 # assume VCSolver files are in a the root directory and that this is two
 # levels above the current one;
 # make sure you've compiled the latest version
-java_dir=${script_dir%/*/*}/VCSolver
+java_dir=${script_dir%/*/*}/$VCSolver_PATH
 echo "java_dir = $java_dir"
 pushd $java_dir > /dev/null
 ./build.sh
