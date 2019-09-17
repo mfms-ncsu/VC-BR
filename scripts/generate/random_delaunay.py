@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
 
-## random_delaunay.py
-# creates a random Delaunay triangulation using delaunay.py to do the
-# triangulation after a random set of points have been
-# chosen; there is an option to triangulate the infinite face
+"""
+ creates a random Delaunay triangulation using delaunay.py to do the
+ triangulation after a random set of points have been
+ chosen; there is an option to triangulate the infinite face
+"""
 
 import numpy
 from numpy import array
@@ -155,4 +156,4 @@ if __name__ == '__main__':
     else:
         print("unknown graph format", args.graph_format)
         
-#  [Last modified: 2019 06 24 at 20:38:09 GMT]
+#  [Last modified: 2019 09 17 at 21:50:42 GMT]

@@ -1,4 +1,10 @@
 #! /usr/bin/env python3
+
+"""
+creates a given number of copies of a graph in snap format;
+the vertices are randomly renumbered and edges put in random order in each copy
+"""
+
 import argparse
 import random
 from copy import deepcopy
@@ -82,4 +88,4 @@ if __name__ == '__main__':
     print("done with ", args.input_file.split("/")[-1], "number of instances", args.number)
     print(" in directory", args.output_folder)
 
-#  [Last modified: 2019 03 10 at 20:08:23 GMT]
+#  [Last modified: 2019 09 17 at 21:49:59 GMT]

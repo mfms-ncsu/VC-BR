@@ -8,7 +8,9 @@ bl_rg.py - (bucket-list random graph) generates graphs with a specified degree v
 
 @author Matt Stallmann
 @date 2018/7/18
+"""
 
+"""
 @todo The file name created with the -of option should be a better reflection
 of reality. For example, a -dv 0 does not guarantee a regular graph; you
 also need the right -md and -MD settings, and those alone might work.
@@ -380,4 +382,4 @@ if __name__ == "__main__":
     write_graph(file_stream)
     debug_print("%s\n", sorted([len(x) for x in _neighbors]))
 
-#  [Last modified: 2019 03 11 at 19:55:01 GMT]
+#  [Last modified: 2019 09 17 at 21:55:04 GMT]

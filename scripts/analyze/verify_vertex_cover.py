@@ -1,13 +1,15 @@
 #! /usr/bin/env python3
 
-# checks to see whether a given solution is correct for a given vertex cover instance
-# Usage: ./verify_vertex_cover.py [options] problem_instance < solution
-#        where problem_instance is a file in snap format and solution is one of
-#           - a list of vertices in the cover, one per line (default)
-#           - a single string of 0's and 1's, where a 1 in position i means i is in the cover
-# Can be used as a filter, as in
-#    cat - | ./verify_vertex_cover [options] problem_instance
-# and then paste the solution on the terminal
+"""
+ checks to see whether a given solution is correct for a given vertex cover instance
+ Usage: ./verify_vertex_cover.py [options] problem_instance < solution
+        where problem_instance is a file in snap format and solution is one of
+           - a list of vertices in the cover, one per line (default)
+           - a single string of 0's and 1's, where a 1 in position i means i is in the cover
+ Can be used as a filter, as in
+    cat - | ./verify_vertex_cover [options] problem_instance
+ and then paste the solution on the terminal
+"""
 
 import argparse
 import sys
@@ -109,4 +111,4 @@ if __name__ == '__main__':
     else:
         print("Incorrect Solution")
 
-#  [Last modified: 2019 01 14 at 20:09:02 GMT]
+#  [Last modified: 2019 09 17 at 21:37:52 GMT]

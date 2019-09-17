@@ -1,6 +1,9 @@
-# debug_printer.py - a mechanism for increasing and decreasing the level of
-# indentation when printing, particularly when entering and leaving functions
-# useful for debugging
+
+"""
+a mechanism for increasing and decreasing the level of indentation when printing,
+particularly when entering and leaving functions; useful for debugging
+(this is a class to be imported by other scripts)
+"""
 
 class debug_printer:
 
@@ -88,4 +91,4 @@ if __name__ == '__main__':
     printer = debug_printer()
     printer.test(5)
 
-#  [Last modified: 2017 01 10 at 14:31:04 GMT]
+#  [Last modified: 2019 09 17 at 21:39:04 GMT]

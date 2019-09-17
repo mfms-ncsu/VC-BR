@@ -1,17 +1,18 @@
 #! /usr/bin/env python3
 
-## delaunay.py
-# Obtained from
-#  http://code.activestate.com/recipes/579021-delaunay-triangulation/
-# The algorithm uses the S-hull method by D A Sinclair
-# (http://www.s-hull.org/paper/s_hull.pdf). The method involves ordering the
-# points in increasing distance from the cloud's center of gravity, creating
-# a triangle with the first three points, and adding the remaining points
-# while contructing triangles between the point and boundary edges - only
-# triangles with a definite sign need to be added (the edge must be
-# visible). Finally, an edge flipping step ensures that the triangles are
-# well formed, i.e. the sum of opposite angles to an edge is < 180 degree
-# (the so-called Delaunay criterion).
+"""
+ Obtained from
+  http://code.activestate.com/recipes/579021-delaunay-triangulation/
+ The algorithm uses the S-hull method by D A Sinclair
+ (http://www.s-hull.org/paper/s_hull.pdf). The method involves ordering the
+ points in increasing distance from the cloud's center of gravity, creating
+ a triangle with the first three points, and adding the remaining points
+ while contructing triangles between the point and boundary edges - only
+ triangles with a definite sign need to be added (the edge must be
+ visible). Finally, an edge flipping step ensures that the triangles are
+ well formed, i.e. the sum of opposite angles to an edge is < 180 degree
+ (the so-called Delaunay criterion).
+"""
 
 import numpy
 from numpy import array
@@ -539,4 +540,4 @@ if __name__ == '__main__':
     print("edges:    ", delaunay.getEdges())
     delaunay.computeDual()
 
-#  [Last modified: 2019 02 12 at 22:24:36 GMT]
+#  [Last modified: 2019 09 17 at 21:48:21 GMT]

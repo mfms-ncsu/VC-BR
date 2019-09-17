@@ -1,0 +1,45 @@
+<html> <head>
+<title>Scripts that generate or convert format of instances</title>
+</head>
+
+<body>
+<h2 align="center">Scripts that generate or convert format of instances</h2>
+
+<pre>
+</pre>
+<h3>Files in lexicographic order</h3>
+<hr>
+<ul>
+<li>
+<strong><a href="benchmark_experiments.py">benchmark_experiments.py</a> --</strong><br>
+<pre>
+benchmark_experiments.py - runs experiments on all files in a given directory;
+                           configurations to be used and fields to put in the output
+                           are specified in config files;
+                           raw output is put in a directory specified by the user
+this is a utility called from run_configs.sh and run_cplex.sh
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="run_configs.sh">run_configs.sh</a> --</strong><br>
+<pre>
+ for running standard benchmark experiments using the Akiba-Iwata solver;
+ uses benchmark_experiments.py, which must be in the same directory.
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="run_cplex.sh">run_cplex.sh</a> --</strong><br>
+<pre>
+ for running standard benchmark experiments using CPLEX;
+ requires that benchmark_experiments.py be present in the same directory.
+</pre>
+</li>
+<hr><br>
+</ul>
+<address>
+<a href="http://people.engr.ncsu.edu/mfms/">Matthias F. (Matt) Stallmann</a><br>
+Created: Tue Sep 17 18:03:31 EDT 2019
+</address>
+</body> </html>

@@ -1,8 +1,8 @@
 #! /bin/bash
 
-## run_cplex.sh - for running standard benchmark experiments using CPLEX
-## requires that benchmark_experiments.py be present in the same directory.
-#
+# for running standard benchmark experiments using CPLEX;
+# requires that benchmark_experiments.py be present in the same directory.
+
 # @todo allow other options to be added at the end
 
 CPLEX_FIELDS="value runtime num_branches iterations frac_cuts clique_cuts cover_cuts"
@@ -83,4 +83,4 @@ mkdir $output_dir
 
 $exec_script $input_dir/ $output_dir/ $options_file $fields_file "$cplex_exec" > $csv_output
 
-#  [Last modified: 2019 07 20 at 13:08:46 GMT]
+#  [Last modified: 2019 09 17 at 22:02:59 GMT]

@@ -1,0 +1,114 @@
+<html> <head>
+<title>Scripts that analyze problem instances and data</title>
+</head>
+
+<body>
+<h2 align="center">Scripts that analyze problem instances and data</h2>
+
+<pre>
+</pre>
+<h3>Files in lexicographic order</h3>
+<hr>
+<ul>
+<li>
+<strong><a href="csv2latex.py">csv2latex.py</a> --</strong><br>
+<pre>
+Simple conversion from a csv file to &-separated fields suitable for latex tables.
+A few features, such as markers for bold, italic, and bold-italic text (!,_,*)
+and comma separation for large integers
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="debug_printer.py">debug_printer.py</a> --</strong><br>
+<pre>
+a mechanism for increasing and decreasing the level of indentation when printing,
+particularly when entering and leaving functions; useful for debugging
+(this is a class to be imported by other scripts)
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="degree_profile.sh">degree_profile.sh</a> --</strong><br>
+<pre>
+ degree_profile.sh - processes one file and outputs two columns:
+  the first is a vertex degree and the second is the number of occurences of that degree
+ a scatterplot can easily be created from these columns.
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="degree_sequence.sh">degree_sequence.sh</a> --</strong><br>
+<pre>
+ degree_sequence.sh - outputs a list of vertex degrees for a graph in snap format
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="degree_stats.py">degree_stats.py</a> --</strong><br>
+<pre>
+ degree_stats.py - given a graph in snap format as input, calculates a
+ variety of statistics on the degree sequence
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="extract_subgraph.py">extract_subgraph.py</a> --</strong><br>
+<pre>
+extracts an induced subgraph from a graph in snap format
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="graph.py">graph.py</a> --</strong><br>
+<pre>
+ Implements a graph as a Python class.
+ A graph is a set of vertices and edges along with information related to
+ the vertex cover problem. Each vertex has an adjacency list and a status,
+ one of the ones just below. In addition, a graph also has an upper bound -
+ the number of vertices currently in the cover, and a lower bound - the
+ minimum possible number of vertices in any cover. For the purpose of
+ deciding which graph to process next during branch and bound a graph has a
+ priority: the number of edges not covered by the set of vertices that are
+ part of the cover.
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="harvest_instance_data.sh">harvest_instance_data.sh</a> --</strong><br>
+<pre>
+ creates a csv file with data for specific instances from a selection of existing csv files
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="highlight_competitive.py">highlight_competitive.py</a> --</strong><br>
+<pre>
+A preprocessor for csv2latex. Takes a file with an instance in each row
+and a configuration for each column.
+Produces output where competitive runtimes are shown in bold and
+those within some threshold of the minimum are in bold italics.
+The last output column lists configs that are within the threshold.
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="verify_vertex_cover.py">verify_vertex_cover.py</a> --</strong><br>
+<pre>
+ checks to see whether a given solution is correct for a given vertex cover instance
+ Usage: ./verify_vertex_cover.py [options] problem_instance < solution
+        where problem_instance is a file in snap format and solution is one of
+           - a list of vertices in the cover, one per line (default)
+           - a single string of 0's and 1's, where a 1 in position i means i is in the cover
+ Can be used as a filter, as in
+    cat - | ./verify_vertex_cover [options] problem_instance
+ and then paste the solution on the terminal
+</pre>
+</li>
+<hr><br>
+</ul>
+<address>
+<a href="http://people.engr.ncsu.edu/mfms/">Matthias F. (Matt) Stallmann</a><br>
+Created: Tue Sep 17 17:43:36 EDT 2019
+</address>
+</body> </html>

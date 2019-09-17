@@ -1,20 +1,22 @@
 #! /usr/bin/env python3
 
-## snap2graphml.py - translates from snap format, described below, to
-# the graphml format used by Galant or Gephi. This program is a simple
-# filter, translating from standard input to standard output.
-#
-# snap format is as follows:
-#
-#    # comment line 1
-#    ...
-#    # comment line k
-#
-#    source_1 target_1
-#    ...
-#    source_m target_m
-#
-# sources and targets are vertex numbers starting at 1
+"""
+ translates from snap format, described below, to the graphml format
+ used by Galant or Gephi;
+ this program is a simple filter, translating from standard input to standard output.
+
+ snap format is as follows:
+
+    # comment line 1
+    ...
+    # comment line k
+
+    source_1 target_1
+    ...
+    source_m target_m
+
+ sources and targets are vertex numbers starting at 1
+"""
 
 import sys
 import random                   # to set random coordinates when not given
@@ -134,4 +136,4 @@ def main():
 
 main()
 
-#  [Last modified: 2018 08 02 at 20:22:40 GMT]
+#  [Last modified: 2019 09 17 at 21:52:31 GMT]
