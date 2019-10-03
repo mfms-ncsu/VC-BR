@@ -8,6 +8,7 @@ wcg_gen.py - generates dense graphs with small vertex covers by expanding a cons
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter # to allow newlines in help messages
 import sys
+import math
 import random
 
 def parse_arguments():
@@ -89,11 +90,33 @@ def add_edge(v_1, v_2):
         tmp = v_1; v_1 = v_2; v_2 = tmp
     _adj_list[v_1].add(v_2)
 
+def add_bipartite_edges():
+    """
+    adds edges based on the original bipartite construction
+    """
+    for i in range(1, _args.core + 1):
+        for j in range(1, _args.core // i + 1):
+            for k in range(1, _args.core + 1):
+                for ell in range(0, _args.multiplicity):
+                    if math.ceil(k / i) == j:
+                        add_edge((0,i,j), (1,k,ell))
+
+def add_cover_cycle_edges():
+    """
+    creates a cycle that includes all vertices in the min cover
+    """
+    for ell in range(0, _args.multiplicity):
+        for k in range(1, _args.core):
+            add_edge((1,k,ell), (1,k+1,ell))
+        add_edge((1,_args.core,ell), (1,1,(ell+1) % _args.multiplicity))
+    
 if __name__ == '__main__':
     global _args
     _args = parse_arguments()
     init_vertices()
+    add_bipartite_edges()
+    add_cover_cycle_edges()
     print("_vertex_number =", _vertex_number)
     print("_adj_list =", _adj_list)
 
-#  [Last modified: 2019 10 03 at 15:09:00 GMT]
+#  [Last modified: 2019 10 03 at 15:40:51 GMT]
