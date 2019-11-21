@@ -20,7 +20,7 @@ def parse_arguments():
     parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
                                      description =
                                      "Generates a graph based on a bipartite graph"
-                                     + " used to show poor approximation by a"
+                                     + " used to show poor approximation\n by a"
                                      + " greedy vertex cover algorithm."
     )
     parser.add_argument("core", type = int,
@@ -29,12 +29,15 @@ def parse_arguments():
                         help = "number of copies of the core;"
                         + " so min cover has size core * multiplicity")
     parser.add_argument("-r", "--random", help = "number of random non-bipartite edges"
-                        + " to add;\n default is to create a cycle that includes all vertices"
+                        + " to add (on each side if '-e b');"
+                        + "\n default is to create a cycle that includes all vertices"
                         + " on one or both sides")
     parser.add_argument("-e", "--extra", help = "where to put extra edges;"
                         + "\n 'c' = cover side (default),"
                         + "\n 'u' = other side,"
-                        + "\n 'b' = both sides")
+                        + "\n 'b' = both sides"
+                        + "\n 'n' = neither side (bipartite graph)",
+                        default = 'c')
     parser.add_argument("-o", "--output", help = "output file name;"
                         + " a standardized name if '_'; stdout if not given"
                         + "\n standardized name has form wcg-xy_ttt_mm_eeee_ss.snap"
@@ -74,18 +77,18 @@ def init_vertices():
     all adjacency lists are originally empty sets
     """
     n = 0                       # number of vertices so far, also used to number vertices
-    # first the U_i vertices
-    for i in range(1, _args.core + 1):
-        for j in range(1, _args.core // i + 1):
-            n += 1
-            _vertex_number[(0,i,j)] = n
-            _adj_list[(0,i,j)] = set({})
-    # then the others
+    # first the W vertices
     for k in range(1, _args.core + 1):
         for ell in range(0, _args.multiplicity):
             n += 1
             _vertex_number[(1,k,ell)] = n
-            _adj_list[(1,k,ell)] = set({})
+            _adj_list[(1,k,ell)] = set()
+    # then the U_i vertices
+    for i in range(1, _args.core + 1):
+        for j in range(1, _args.core // i + 1):
+            n += 1
+            _vertex_number[(0,i,j)] = n
+            _adj_list[(0,i,j)] = set()
 
 def add_edge(v_1, v_2):
     """
@@ -106,6 +109,41 @@ def add_bipartite_edges():
                     if math.ceil(k / i) == j:
                         add_edge((0,i,j), (1,k,ell))
 
+def add_random_cover_side_edges(number_desired):
+    """
+    adds random edges between vertices in the original min cover
+    """
+    edges_added = set()
+    number_added = 0
+    while number_added < number_desired:
+        ell_1 = random.choice(range(0, _args.multiplicity))
+        ell_2 = random.choice(range(0, _args.multiplicity))
+        k_1 = random.choice(range(1, _args.core + 1))
+        k_2 = random.choice(range(1, _args.core + 1))
+        if k_1 == k_2 and ell_1 == ell_2: continue
+        if ((k_1,ell_1), (k_2,ell_2)) in edges_added: continue
+        if ((k_2,ell_2), (k_1,ell_1)) in edges_added: continue
+        add_edge((1,k_1,ell_1), (1,k_2,ell_2))
+        number_added = number_added + 1
+        edges_added.add(((k_1,ell_1), (k_2,ell_2)))
+
+def add_random_other_side_edges(number_desired):
+    """
+    adds random edges between vertices on the side opposite the original min cover
+    """
+    edges_added = set()
+    number_added = 0
+    while number_added < number_desired:
+        i_1 = random.choice(range(1, _args.core + 1))
+        i_2 = random.choice(range(1, _args.core + 1))
+        j_1 = random.choice(range(1, _args.core // i_1 + 1))
+        j_2 = random.choice(range(1, _args.core // i_2 + 1))
+        if i_1 == i_2 and j_1 == j_2: continue
+        if ((i_1,j_1), (i_2,j_2)) in edges_added: continue
+        add_edge((0,i_1,j_1), (0,i_2,j_2))
+        number_added = number_added + 1
+        edges_added.add(((i_1,j_1), (i_2,j_2)))
+
 def add_cover_cycle_edges():
     """
     creates a cycle that includes all vertices in the min cover
@@ -118,7 +156,7 @@ def add_cover_cycle_edges():
 def add_other_cycle_edges():
     for i in range(1, _args.core + 1):
         for j in range(1, _args.core // i):
-            add_edge((0, i, j), (0, i, j+1))
+            add_edge((0,i,j), (0,i,j+1))
         add_edge((0,i,_args.core//i), (0, i % _args.core + 1, 1))
 
 def output_comments(out_stream):
@@ -146,12 +184,20 @@ def output_snap(out_stream):
 if __name__ == '__main__':
     global _args
     _args = parse_arguments()
+    if _args.random and _args.seed:
+        random.seed(int(_args.seed))
     init_vertices()
     add_bipartite_edges()
     if _args.extra == 'b' or _args.extra == 'c':
-        add_cover_cycle_edges()
+        if _args.random:
+            add_random_cover_side_edges(int(_args.random))
+        else:
+            add_cover_cycle_edges()
     if _args.extra == 'b' or _args.extra == 'u':
-        add_other_cycle_edges()
+        if _args.random:
+            add_random_other_side_edges(int(_args.random))
+        else:
+            add_other_cycle_edges()
     output_snap(sys.stdout)
 
-#  [Last modified: 2019 10 03 at 18:02:36 GMT]
+#  [Last modified: 2019 11 21 at 20:08:15 GMT]
