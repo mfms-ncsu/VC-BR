@@ -59,6 +59,7 @@ def ReadCover(file_stream, vertex_list):
         # each line is an integer representing a vertex
         for line in file_stream:
              cover.append(int(line))
+             value += 1
     else:
         # line is a string of 0's and 1's; the i-th position is 1 iff vertex i is in the cover
         line = file_stream.readline().strip()
@@ -113,4 +114,4 @@ if __name__ == '__main__':
     else:
         print("Incorrect Solution")
 
-#  [Last modified: 2020 01 09 at 15:20:25 GMT]
+#  [Last modified: 2020 01 09 at 15:36:46 GMT]
