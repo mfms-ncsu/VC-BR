@@ -23,7 +23,6 @@ def parse_arguments():
                                      + " or as a list of vertex numbers,"
                                      + " and checks whether the cover is"
                                      + " valid for the input graph."
-                                     + " Also reports vertices in the cover."
                                      + " Usage: cat - | verify_vertex_cover ... "
                                      + "and paste the solution."
                                      + " The vector of 0's and 1's is 0-based, i.e.,"
@@ -37,6 +36,8 @@ def parse_arguments():
                         help="print undecided vertices and edges (x's in the input)")
     parser.add_argument("-UV", "--undecided_vertices", action='store_true',
                         help="print undecided vertices only (x's in the input)")
+    parser.add_argument("-s", "--solution", action='store_true',
+                        help="print the cover as a list of vertices (python format)")
 
     args = parser.parse_args()
 
@@ -99,16 +100,17 @@ if __name__ == '__main__':
     verified = verify_vertex_cover(graph, cover)
     if args.undecided or args.undecided_vertices:
         print("number_undecided =", len(undecided_vertices))
+    if args.solution:
+        print("cover =", cover)
     if args.undecided and len(undecided_vertices) > 0:
         print("undecided_vertices =", undecided_vertices)
         print("undecided_edges =", undecided_edges)
     elif args.undecided_vertices and len(undecided_vertices) > 0:
         print("undecided_vertices =", undecided_vertices)
-    print("cover =", cover)
     print("value =", value)
     if verified:
         print("Correct Solution")
     else:
         print("Incorrect Solution")
 
-#  [Last modified: 2019 09 17 at 21:37:52 GMT]
+#  [Last modified: 2020 01 09 at 15:20:25 GMT]

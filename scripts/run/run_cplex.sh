@@ -5,7 +5,7 @@
 
 # @todo allow other options to be added at the end
 
-CPLEX_FIELDS="value runtime num_branches iterations frac_cuts clique_cuts cover_cuts"
+CPLEX_FIELDS="ProvedOptimal StatusCode value runtime num_branches iterations frac_cuts clique_cuts cover_cuts"
 
 function usage {
     echo "Usage: run_cplex.sh INPUT_DIRECTORY [TIME_LIMIT]"
@@ -36,8 +36,8 @@ output_name=`basename $input_dir`
 csv_output=$output_name.csv
 if [ -e $csv_output ]; then
     alternate_name=$output_name-$$.csv
-    echo "*** warning: file $csv_output exists, using $alternate_name instead"
-    csv_output=$alternate_name
+    echo "*** warning: file $csv_output exists, saving it as $alternate_name"
+    mv $csv_output $alternate_name
 fi
 
 shift
@@ -83,4 +83,4 @@ mkdir $output_dir
 
 $exec_script $input_dir/ $output_dir/ $options_file $fields_file "$cplex_exec" > $csv_output
 
-#  [Last modified: 2019 09 17 at 22:02:59 GMT]
+#  [Last modified: 2020 01 02 at 16:24:46 GMT]

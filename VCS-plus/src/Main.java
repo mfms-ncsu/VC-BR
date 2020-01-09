@@ -380,7 +380,9 @@ public class Main {
 
             /**
              * @todo make all reporting consistent, i.e., call on methods of
-             * VCSolver to do the job, as with LB counts and times
+             * VCSolver to do the job, as with LB counts and times.
+             * Furthermore, reporting should go into a separate method, that
+             * can be called even if the solver crashes
              */
             System.out.format("%s:\n", "Reduction Times (ms)");
             System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
@@ -428,6 +430,11 @@ public class Main {
                 System.out.format("%s %s\n", "solution\t", VCSolver.solutionToString(vc.optimal_solution));
             }
         } catch (OutOfMemoryError e) {
+            /**
+             * @todo catch all runtime errors (and make a timeout an error);
+             * then report statistics regardless of error, but include a
+             * ProvedOptimal output line to be consistent with CPLEX
+             */
             System.out.printf("file name: %s\nV: %d, E: %d\n", file, adj.length, m); 
             System.err.println(e.getMessage());
             System.exit(1);
@@ -451,4 +458,4 @@ public class Main {
     }
 }
 
-//  [Last modified: 2019 08 14 at 19:24:51 GMT]
+//  [Last modified: 2020 01 02 at 17:07:19 GMT]
