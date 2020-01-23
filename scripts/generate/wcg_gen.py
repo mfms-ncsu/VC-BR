@@ -19,15 +19,16 @@ def date():
 def parse_arguments():
     parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
                                      description =
-                                     "Generates a graph based on a bipartite graph"
-                                     + " used to show poor approximation\n by a"
-                                     + " greedy vertex cover algorithm."
+                                     "Generates graphs based on worst-case examples for a greedy heuristic;"
+                                     + "\n multiplicity has to be > 1 to consistently get the bad behavior,"
+                                     + "\n and min cover size must be core * multiplicity - see below."
     )
     parser.add_argument("core", type = int,
                         help = "number of cover vertices in the original construction")
     parser.add_argument("multiplicity", type = int,
                         help = "number of copies of the core;"
-                        + " so min cover has size core * multiplicity")
+                        + "\n if '-e n [or c]' and '-r x,0',"
+                        + "\n   min cover has size core * multiplicity")
     parser.add_argument("-r", "--random", help = "number of random non-bipartite edges"
                         + " to add,\n in addition to any cycle edges (see -e)"
                         + "\n format is 'c,u' where c is the number on the cover side"
@@ -41,8 +42,8 @@ def parse_arguments():
                         + "\n 'u' = other side,"
                         + "\n 'b' = both sides",
                         default = 'n')
-    parser.add_argument("-o", "--output", help = "output file name;"
-                        + " a standardized name if '_'; stdout if not given"
+    parser.add_argument("-o", "--output", help = "output file name (stdout if not given);"
+                        + "\na standardized name if '_' (underscore)"
                         + "\n standardized name has form wcg-xy_ttt_mm_eeee_ss.snap"
                         + "\n where x is 'c' (cycle) or 'r' (random)"
                         + "\n       y is the '-e' option"
@@ -111,12 +112,15 @@ def add_bipartite_edges():
     """
     adds edges based on the original bipartite construction
     """
+    num_edges = 0
     for i in range(1, _args.core + 1):
         for j in range(1, _args.core // i + 1):
             for k in range(1, _args.core + 1):
                 for ell in range(0, _args.multiplicity):
                     if math.ceil(k / i) == j:
+                        num_edges += 1
                         add_edge((0,i,j), (1,k,ell))
+    return num_edges
 
 def add_random_cover_side_edges(number_desired):
     """
@@ -133,8 +137,9 @@ def add_random_cover_side_edges(number_desired):
         if ((k_1,ell_1), (k_2,ell_2)) in _cover_side_edges: continue
         if ((k_2,ell_2), (k_1,ell_1)) in _cover_side_edges: continue
         add_edge((1,k_1,ell_1), (1,k_2,ell_2))
-        number_added = number_added + 1
+        number_added += 1
         _cover_side_edges.add(((k_1,ell_1), (k_2,ell_2)))
+    return number_added
 
 def add_random_other_side_edges(number_desired):
     """
@@ -151,28 +156,36 @@ def add_random_other_side_edges(number_desired):
         if ((i_1,j_1), (i_2,j_2)) in _other_side_edges: continue
         if ((i_2,j_2), (i_1,j_1)) in _other_side_edges: continue
         add_edge((0,i_1,j_1), (0,i_2,j_2))
-        number_added = number_added + 1
+        number_added += 1
         _other_side_edges.add(((i_1,j_1), (i_2,j_2)))
+    return number_added
 
 def add_cover_cycle_edges():
     """
     creates a cycle that includes all vertices in the min cover
     """
+    number_added = 0
     for ell in range(0, _args.multiplicity):
         for k in range(1, _args.core):
+            number_added += 1
             add_edge((1,k,ell), (1,k+1,ell))
             _cover_side_edges.add(((k,ell), (k+1,ell)))
+        number_added += 1
         add_edge((1,_args.core,ell), (1,1,(ell+1)%_args.multiplicity))
         _cover_side_edges.add(((_args.core,ell), (1,(ell+1)%_args.multiplicity)))
+    return number_added
     
 def add_other_cycle_edges():
     """
     creates a cycle that includes all vertices on the side opposite the min cover
     """
+    number_added = 0
     for i in range(1, _args.core + 1):
         for j in range(1, _args.core // i):
+            number_added += 1
             add_edge((0,i,j), (0,i,j+1))
             _other_side_edges.add(((i,j), (i,j+1)))
+        number_added += 1
         add_edge((0,i,_args.core//i), (0,i%_args.core+1,1))
         _other_side_edges.add(((i,_args.core//i), (i%_args.core+1,1)))
 
@@ -215,11 +228,12 @@ if __name__ == '__main__':
     if _args.random and _args.seed:
         random.seed(int(_args.seed))
     init_vertices()
-    add_bipartite_edges()
+    num_bipartite_edges = add_bipartite_edges()
+    num_extra_edges = 0
     if _args.extra == 'b' or _args.extra == 'c':
-        add_cover_cycle_edges()
+        num_extra_edges = add_cover_cycle_edges()
     if _args.extra == 'b' or _args.extra == 'u':
-        add_other_cycle_edges()
+        num_extra_edges += add_other_cycle_edges()
     if _args.random:
         # compute maximum number of possible edges on each side and use that
         # to figure out whether user requested too many
@@ -238,7 +252,7 @@ if __name__ == '__main__':
             sys.stderr.write("*** requested = {}, possible = {}, resorting to possible\n"
                              .format(num_random_cover_edges, possible_cover_edges))
             num_random_cover_edges = possible_cover_edges
-        add_random_cover_side_edges(num_random_cover_edges)
+        num_extra_edges += add_random_cover_side_edges(num_random_cover_edges)
         
         possible_other_edges = max_other_edges - len(_other_side_edges)
         if num_random_other_edges > possible_other_edges:
@@ -246,8 +260,24 @@ if __name__ == '__main__':
             sys.stderr.write("*** requested = {}, possible = {}, resorting to possible\n"
                              .format(num_random_other_edges, possible_other_edges))
             num_random_other_edges = possible_other_edges
-        add_random_other_side_edges(num_random_other_edges)
+        num_extra_edges += add_random_other_side_edges(num_random_other_edges)
 
-    output_snap(sys.stdout)
+    if _args.output:
+        if _args.output == '_':
+            seed_string = ""
+            if _args.random:
+                type_flag = 'r'
+                seed_string = "_xx"
+                if _args.seed:
+                    seed_string = "_%02d" % _args.seed
+            else:
+                type_flag = 'c'
+            filename = "wcg-%c%c_%03d_%02d_%04d%s.snap" %\
+                       (type_flag, _args.extra, _args.core, _args.multiplicity,
+                        num_extra_edges, seed_string)
+            out_stream = open(filename, "w")
+            output_snap(out_stream)
+        else:
+            output_snap(sys.stdout)
 
-#  [Last modified: 2019 11 22 at 21:06:45 GMT]
+#  [Last modified: 2020 01 17 at 15:14:20 GMT]

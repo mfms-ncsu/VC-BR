@@ -12,7 +12,7 @@ import random
 import networkx as nx
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Creates a random Chung-Lu graph"
+    parser = argparse.ArgumentParser(description="Creates a random Chung-Lu graph."
                                      + " Vertices are numbered starting at 0."
                                      + " If arguments relating to number of vertices and"
                                      + " degrees are missing,"
@@ -101,4 +101,4 @@ if __name__ == '__main__':
     G = nx.expected_degree_graph(degree_list, args.seed, False)
     write_graph(out_stream, G, args.seed)
 
-#  [Last modified: 2019 07 03 at 16:19:15 GMT]
+#  [Last modified: 2020 01 09 at 19:50:26 GMT]

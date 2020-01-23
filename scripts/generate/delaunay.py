@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 """
+A class to be imported.
  Obtained from
   http://code.activestate.com/recipes/579021-delaunay-triangulation/
  The algorithm uses the S-hull method by D A Sinclair
@@ -540,4 +541,4 @@ if __name__ == '__main__':
     print("edges:    ", delaunay.getEdges())
     delaunay.computeDual()
 
-#  [Last modified: 2019 09 17 at 21:48:21 GMT]
+#  [Last modified: 2020 01 09 at 20:28:26 GMT]

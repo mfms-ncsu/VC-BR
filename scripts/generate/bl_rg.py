@@ -13,7 +13,7 @@ bl_rg.py - (bucket-list random graph) generates graphs with a specified degree v
 """
 @todo The file name created with the -of option should be a better reflection
 of reality. For example, a -dv 0 does not guarantee a regular graph; you
-also need the right -md and -MD settings, and those alone might work.
+also need the right -md and -MD settings, and those alone might not work.
 
 @todo The -dv option is finicky as far as controlling real degree
 distribution is concerned. Often, it takes many tries with different -dv,
@@ -79,6 +79,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         description = "Creates a random (connected) graph following, as much as possible, the specifications supplied by the user; graph is printed in snap format on standard output",
         epilog = "min_deg and max_deg will impact the effect of deg_variance"
+        + "; for regular graphs, use -dv 0"
     )
     parser.add_argument("vertices", help = "number of vertices", type = int)
     parser.add_argument("average_degree",
@@ -382,4 +383,4 @@ if __name__ == "__main__":
     write_graph(file_stream)
     debug_print("%s\n", sorted([len(x) for x in _neighbors]))
 
-#  [Last modified: 2019 09 17 at 21:55:04 GMT]
+#  [Last modified: 2020 01 23 at 21:46:44 GMT]

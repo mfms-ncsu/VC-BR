@@ -6,6 +6,8 @@
 """
 
 import argparse
+from argparse import ArgumentParser
+from argparse import RawTextHelpFormatter # to allow newlines in help messages
 import sys
 import os
 import math
@@ -15,35 +17,36 @@ OUTPUT_PREFIX = "z_ds-"         # put degree stats files at the end of a directo
 INSTANCE_HEADER = "00-Instance" # standard header for problem instance to allow merging
 VERTEX_HEADER = "n"
 EDGE_HEADER = "m"
-DEFAULT_STAT_LIST=["min", "bottom", "med", "mean", "top", "max", "stdev", "nad"]
+DEFAULT_STAT_LIST=["min", "bottom", "med", "mean", "top", "max", "stdev", "spread", "nad"]
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Read graphs in snap format and"
+    parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
+                                     description="Read graphs in snap format and"
                                      + " produces degree statistics in csv format"
-                                     + " in a file called z_ds-input_path") 
+                                     + "\n in a file called z_ds-input_path.csv") 
 
     parser.add_argument("input_path", help="a file in snap format"
                         + " or a directory containing such files")
     parser.add_argument("-s", "--stats", dest="stats",
                         help="a comma separated list of statistics to print, options are:"
-                        + " min, med, mean, max, stdev, first, third, iqrt, bottom, top, spread, nad"
-                        + ", where first and third are the first and third quartile"
+                        + "\n min, med, mean, max, stdev, first, third, iqrt, bottom, top, spread, nad"
+                        + "\n  where first and third are the first and third quartile"
                         + ", respectively"
-                        + ", iqrt is the interquartile ratio = (third - first) / median"
-                        + ", top and bottom are top and bottom percentiles determined by the -p parameter"
-                        + ", spread = lg(top / bottom) + stdev / median"
-                        + ", and nad = 'normalized average degree'"
-                        + " Default is {}".format(','.join(DEFAULT_STAT_LIST))
+                        + "\n  iqrt is the interquartile ratio = (third - first) / median"
+                        + "\n  top and bottom are top and bottom percentiles determined by the -p parameter"
+                        + "\n  spread = lg(top / bottom) + stdev / median"
+                        + "\n  and nad = 'normalized average degree'"
+                        + "\n  Default is {}".format(', '.join(DEFAULT_STAT_LIST))
                         )
     parser.add_argument("-p", "--percentile", type = int, help = "percentile used to calculate top and bottom (default 5)", default = 5)
     parser.add_argument("-M", "--max_degree", dest="max_degree", type=int, default=200,
-                        help="maximum degree to be used when normalizing (nad), i.e., "
-                        + "actual average degree is mapped to [1..max_degree]"
+                        help="maximum degree to be used when normalizing (nad),"
+                        + "\n i.e., actual average degree is mapped to [1..max_degree]"
                         + ", default is 200")
     parser.add_argument("-dt", "--degree_threshold", dest="degree_threshold",
                         type=int, default=20,
                         help="threshold below which actual average degree is used"
-                        + " instead of normalized when normalizing (nad)"
+                        + "\n instead of normalized when normalizing (nad)"
                         + ", default is 20")
     args = parser.parse_args()
     return args
@@ -251,4 +254,4 @@ if __name__ == '__main__':
     else:
         print("{} is not a file or a directory")
         
-#  [Last modified: 2019 07 12 at 18:19:36 GMT]
+#  [Last modified: 2020 01 17 at 15:31:34 GMT]
