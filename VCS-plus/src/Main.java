@@ -10,8 +10,8 @@ import tc.wata.util.*;
 import tc.wata.util.SetOpt.*;
 
 public class Main {
-    public static final String VERSION = "1.1.1";
-    public static final String MODIFICATION_DATE = "July 2019";
+    public static final String VERSION = "1.2";
+    public static final String MODIFICATION_DATE = "February 2020";
     
     @Option(abbr = 'b', usage = "0: random, 1: mindeg, 2: maxdeg")
     public static int branching = 2;
@@ -119,11 +119,12 @@ public class Main {
     long start;
     long end;
     long totalRuntime;
+    String runStatus = "Normal";
     
     void printVersionInfo() {
-        System.out.println("Akiba-Iwata branch and reduce solver, Version " + VERSION);
-        System.out.println(" modified by Yang Ho and Matthias Stallmann, "
-                           + MODIFICATION_DATE);
+        System.out.println("Akiba-Iwata branch and reduce solver,"
+                           + " modified by Yang Ho and Matthias Stallmann");
+        System.out.println(" version " + VERSION  + ", " + MODIFICATION_DATE);
     }
 
   /**
@@ -217,6 +218,8 @@ public class Main {
      * report all statistics
      */
     void report(VCSolver vc) {
+        System.out.format(VCSolver.STRING_REPORT_FORMAT,
+                          "status", runStatus);
         System.out.format(VCSolver.COUNT_REPORT_FORMAT,
                           "value", vc.optimal_value);
         end = System.nanoTime();
@@ -452,13 +455,18 @@ public class Main {
              * then report statistics regardless of error, but include a
              * ProvedOptimal output line to be consistent with CPLEX
              */
-            System.err.println("OutOfMemoryError: " + e);
-            System.err.println(e.getMessage());
+            runStatus = "MemoryLimit";
+            System.err.println(e);
+            report(vc);
+            System.exit(1);
+        } catch (AbortTimeLimit e) {
+            runStatus = "Timeout";
+            System.err.println(e);
             report(vc);
             System.exit(1);
         } catch (Throwable e) {
-            System.err.println("Other throwable exception: " + e);
-            System.err.println(e.getMessage());
+            runStatus = "Exception";
+            System.err.println(e);
             report(vc);
             e.printStackTrace(System.err);
             System.exit(1);
@@ -482,4 +490,4 @@ public class Main {
     }
 }
 
-//  [Last modified: 2020 02 06 at 19:03:36 GMT]
+//  [Last modified: 2020 02 06 at 22:51:06 GMT]

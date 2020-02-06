@@ -1,4 +1,4 @@
-## Instructions for running `VCSolver`
+## Instructions for running `VCS-plus`
 
 * To compile:
 `./build.sh`
