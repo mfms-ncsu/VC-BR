@@ -114,8 +114,10 @@ public class Main {
     public static double size_skip = 1.00;
 
     /**
-     * so that runtime can be accessed from routine that prints it
+     * so that runtime-relevant information can be accessed from routine that prints it
      */
+    long start;
+    long end;
     long totalRuntime;
     
     void printVersionInfo() {
@@ -217,6 +219,8 @@ public class Main {
     void report(VCSolver vc) {
         System.out.format(VCSolver.COUNT_REPORT_FORMAT,
                           "value", vc.optimal_value);
+        end = System.nanoTime();
+        totalRuntime = end - start;
         System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
                           "runtime", 1e-9 * totalRuntime);
         System.out.format(VCSolver.COUNT_REPORT_FORMAT,
@@ -405,7 +409,6 @@ public class Main {
             VCSolver.MAX_DENSITY_THRESHOLD = max_density_threshold;
         }
 
-        long start, end;
         if (debug >= 2) {
             System.err.println("Graph:");
             for (int i = 0; i < adj.length; i++) {
@@ -422,8 +425,6 @@ public class Main {
             VCSolver.startTime = 1e-9 * start;
             VCSolver.timelimit = 1e-9 * start + timeout;
             vc.solve();
-            end = System.nanoTime();
-            totalRuntime = end - start;
             report(vc);
 
             // read file again so that solution can be printed
@@ -451,12 +452,12 @@ public class Main {
              * then report statistics regardless of error, but include a
              * ProvedOptimal output line to be consistent with CPLEX
              */
-            System.out.printf("file name: %s\nV: %d, E: %d\n", file, adj.length, m); 
+            System.err.println("OutOfMemoryError: " + e);
             System.err.println(e.getMessage());
             report(vc);
             System.exit(1);
         } catch (Throwable e) {
-            System.out.printf("file name: %s\nV: %d, E: %d\n", file, adj.length, m); 
+            System.err.println("Other throwable exception: " + e);
             System.err.println(e.getMessage());
             report(vc);
             e.printStackTrace(System.err);
@@ -481,4 +482,4 @@ public class Main {
     }
 }
 
-//  [Last modified: 2020 02 06 at 18:25:52 GMT]
+//  [Last modified: 2020 02 06 at 19:03:36 GMT]
