@@ -71,7 +71,7 @@ public class VCSolver {
     /**
      * format for printing all runtimes, preceded by their tags
      */
-    public static final String RUNTIME_REPORT_FORMAT = "%-20s\t%10.3f\n";
+    public static final String RUNTIME_REPORT_FORMAT = "%-20s\t%10.2f\n";
     
     /**
      * prints the number of times each lower bound type was effective, in a
@@ -3142,4 +3142,4 @@ loop :
 
 }
 
-//  [Last modified: 2019 08 14 at 19:29:29 GMT]
+//  [Last modified: 2020 02 05 at 19:27:49 GMT]
