@@ -52,13 +52,13 @@ def parse_arguments():
 # The purpose is debugging convenience in case other information about a
 # partial solution is desired.
 def ReadCover(file_stream, vertex_list):
-    cover = []
+    cover = set()
     status_string = ""
     value = 0
     if vertex_list:
         # each line is an integer representing a vertex
         for line in file_stream:
-             cover.append(int(line))
+             cover.add(int(line))
              value += 1
     else:
         # line is a string of 0's and 1's; the i-th position is 1 iff vertex i is in the cover
@@ -67,7 +67,7 @@ def ReadCover(file_stream, vertex_list):
         for i in range(len(line)):
             if line[i] == "1":
                 # vertex numbering starts with 1, indexing of strings is 0-based
-                cover.append(i)
+                cover.add(i)
                 value += 1
     return value, cover, status_string
 
@@ -112,6 +112,6 @@ if __name__ == '__main__':
     if verified:
         print("Correct Solution")
     else:
-        print("Incorrect Solution")
+        print("*** Incorrect Solution ***")
 
-#  [Last modified: 2020 01 09 at 15:36:46 GMT]
+#  [Last modified: 2020 02 27 at 22:37:50 GMT]

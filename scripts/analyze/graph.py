@@ -265,20 +265,20 @@ class GraphReader:
                     vertices.append(u)
                     if u > max_vertex:
                         max_vertex = u
-                    adjList[u] = []
+                    adjList[u] = set()
                 if v not in adjList:
                     vertices.append(v)
                     if v > max_vertex:
                         max_vertex = v
-                    adjList[v] = []
+                    adjList[v] = set()
                 # at this point, both u and v are in the list of vertices and
                 # each has a, possibly empty, adjacency list
                 if v not in adjList[u]:
                     edges.append((u, v))
-                    adjList[u].append(v)
+                    adjList[u].add(v)
                     if not directed:
-                        adjList[v].append(u)
+                        adjList[v].add(u)
         return Graph(vertices=vertices, max_vertex = max_vertex,
                      edges=edges, adjList=adjList)
 
-#  [Last modified: 2020 01 09 at 20:32:59 GMT]
+#  [Last modified: 2020 02 27 at 22:33:25 GMT]
