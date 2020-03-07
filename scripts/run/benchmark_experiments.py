@@ -76,9 +76,6 @@ def run_option(program, input_file, options, tag, output_file):
         error_stream.write("** host = {}\n".format(host_name))
         error_stream.write("** {}\n".format(date_time))
         error_stream.write("** Check {} for more details\n".format(output_file))
-        return False
-    else:
-        return True
 
 # parses the output file and creates a column for each field that was
 # specified in the list of fields
@@ -152,16 +149,14 @@ if __name__ == '__main__':
             output_file = ''.join([args.output_dir, extension_omitted(file_name),
                                    "-", option[1], ".txt"])
             if not os.path.isfile(output_file):
-                succeeded = run_option(args.program, input_file, option[0], option[1], output_file)
-                if succeeded:
-                    process_output(output_file, option, fields, results)
+                run_option(args.program, input_file, option[0], option[1], output_file)
             else:
                 # if the file already exists, process it anyhow
                 # this allows for reruns with more options or more instances,
                 # while old information is still put into the spreadsheet
                 sys.stderr.write("** file '{}' already exists, no need to rerun\n"
                                  .format(output_file))
-                process_output(output_file, option, fields, results)
+            process_output(output_file, option, fields, results)
 
 
         # print results
@@ -173,4 +168,4 @@ if __name__ == '__main__':
             field_string = ",".join([field_string, option_string])
         print("{}{}".format(extension_omitted(file_name), field_string))
 
-#  [Last modified: 2019 07 04 at 20:11:18 GMT]
+#  [Last modified: 2020 03 07 at 14:30:42 GMT]
