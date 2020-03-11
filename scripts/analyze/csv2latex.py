@@ -63,11 +63,17 @@ def add_decimal_and_commas(number):
             as specified by command-line arguments
     """
     integer_part = int(number)
-    integer_string = add_commas(integer_part)
     fractional_part = number - integer_part
     fractional_format = "%0." + str(_args.precision) + "f"
-    # note: formatted floats always begin with a 0 to the left of the decimal point
-    fractional_part_formatted = (fractional_format % fractional_part)[1:]
+    # note: formatted floats always begin with a 0 to the left of the decimal
+    # point, but formatting can round up to the next integer, in which case
+    # the integer part could be one less than it should be:
+    #  for example 0.98 could become 1.0 with precision 1
+    fractional_part_formatted = (fractional_format % fractional_part)
+    if fractional_part_formatted[0] == '1':
+        integer_part += 1
+    fractional_part_formatted = fractional_part_formatted[1:]
+    integer_string = add_commas(integer_part)
     return integer_string + fractional_part_formatted
 
 def _convert(string):
@@ -126,4 +132,4 @@ if __name__ == '__main__':
         out_stream = sys.stdout
     _csv_to_latex(in_stream, out_stream)
 
-#  [Last modified: 2020 02 14 at 16:24:41 GMT]
+#  [Last modified: 2020 03 11 at 13:28:25 GMT]
