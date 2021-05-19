@@ -25,7 +25,7 @@ def parse_arguments():
                         help="triangulate the infinite face")
     parser.add_argument("-d", "--dual", action="store_true", help="produce the dual graph")
     parser.add_argument("-f", "--graph_format",
-                        help="graph format (snap, gph); default is snap; gph does no work if --dual option is used",
+                        help="graph format (snap, gph); default is snap (no coordinates or edge weights); gph includes both coordinates and edge lengths",
                         default="snap")
     parser.add_argument("number_of_vertices", help="number of vertices; if --dual option is used, the actual number will be the number of faces, which is 2n-4 if --infinite_face is also used; to get N vertices in that case, you need to specify (N+4)/2", type=int)
     args = parser.parse_args()
@@ -88,9 +88,12 @@ def print_gph(out_stream, points, edges, seed):
         c comment line k
 
         g number_of_nodes number_of_edges
+        IF the graph is not a dual
         n v_1 x_1 y_1
         ...
         n v_n x_n y_n
+        ------------
+        ALWAYS, but omit weights if in snap format
         e source_1 target_1 weight_1
         ...
         e source_m target_m weight_m
@@ -141,9 +144,10 @@ if __name__ == '__main__':
         delaunay.triangulateInfiniteFace()
     if args.dual:
         delaunay.computeDual()
-        n = len(delaunay.getDualPoints())
+        points = delaunay.getDualPoints()
         edges = delaunay.getDualEdges()
     else:
+        points = delaunay.getPoints()
         edges = delaunay.getEdges()
     if args.output:
         out_stream = open(args.output, 'w')
@@ -152,8 +156,8 @@ if __name__ == '__main__':
     if args.graph_format == "snap":
         print_graph(out_stream, n, edges, seed)
     elif args.graph_format == "gph":
-        print_gph(out_stream, delaunay.getPoints(), edges, seed)
+        print_gph(out_stream, points, edges, seed)
     else:
         print("unknown graph format", args.graph_format)
         
-#  [Last modified: 2019 09 17 at 21:50:42 GMT]
+#  [Last modified: 2021 03 16 at 17:40:24 GMT]

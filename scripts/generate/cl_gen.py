@@ -34,7 +34,8 @@ def parse_arguments():
                         help = "number of vertices, must be present"
                         + " if degree arguments are specified (otherwise these are ignored)",
                         type = int)
-    parser.add_argument("--dist", help = "degree distribution, one of "
+    parser.add_argument("--dist", default="uniform",
+                        help = "degree distribution, one of "
                         + "'uniform' (default)"
                         + ", 'spike' (very few vertices at the extremes, normal distrbution)"
                         )
@@ -101,4 +102,4 @@ if __name__ == '__main__':
     G = nx.expected_degree_graph(degree_list, args.seed, False)
     write_graph(out_stream, G, args.seed)
 
-#  [Last modified: 2020 01 09 at 19:50:26 GMT]
+#  [Last modified: 2021 05 19 at 19:49:06 GMT]
