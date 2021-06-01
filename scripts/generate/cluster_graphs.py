@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 import argparse
 import random
 from time import gmtime, strftime
@@ -94,10 +94,11 @@ if __name__=="__main__":
         with open(create_file_name(prefix, args.size, i, ext),'w') as output_file:
             output_file.write("# cluster graph with {} clusters, {} vertices, {} edges\n"
                               .format(len(matrix), size, len(edges)))
+            output_file.write("# created by {}\n".format(" ".join(sys.args)))
             date_and_time_string = strftime("%Y-%m-%d %X", gmtime())
             output_file.write("# created {}\n".format(date_and_time_string))
             for u,v in edges:
                 output_file.write("{} {}\n".format(u,v))
             output_file.close()
 
-#  [Last modified: 2018 03 29 at 18:56:36 GMT]
+#  [Last modified: 2021 06 01 at 19:02:55 GMT]

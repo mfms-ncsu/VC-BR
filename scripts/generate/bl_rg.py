@@ -274,6 +274,7 @@ def random_graph(degree_var):
         add_edge(v, w)
 
 def write_preamble(file_stream, degree_var, seed):
+    file_stream.write("# created by {}\n".format(" ".join(sys.argv)))
     file_stream.write("# random_dv n = {} m = {} dv = {} seed = {}\n".format(_num_vertices,
                                                                              _num_edges,
                                                                              degree_var,
@@ -380,4 +381,4 @@ if __name__ == "__main__":
     write_graph(file_stream)
     debug_print("%s\n", sorted([len(x) for x in _neighbors]))
 
-#  [Last modified: 2019 03 11 at 19:55:01 GMT]
+#  [Last modified: 2021 06 01 at 18:55:27 GMT]

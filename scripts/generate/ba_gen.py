@@ -22,7 +22,7 @@ def parse_arguments():
     return args
 
 def write_graph(out_stream, G, seed):
-    out_stream.write("# Barabasi-Albert graph: vertices edges seed\n")
+    out_stream.write("# created by {}\n".format(" ".join(sys.argv)))
     out_stream.write("# {} {} {}\n".format(nx.number_of_nodes(G), nx.number_of_edges(G), seed))
     edge_list = nx.generate_edgelist(G, data=False)
     for output_line in edge_list:
@@ -39,4 +39,4 @@ if __name__ == '__main__':
     G = nx.barabasi_albert_graph(args.num_vertices, attachment_edges)
     write_graph(out_stream, G, args.seed)
 
-#  [Last modified: 2019 07 12 at 15:15:06 GMT]
+#  [Last modified: 2021 06 01 at 18:55:56 GMT]
