@@ -71,7 +71,12 @@ public class VCSolver {
     /**
      * format for printing all runtimes, preceded by their tags
      */
-    public static final String RUNTIME_REPORT_FORMAT = "%-20s\t%10.3f\n";
+    public static final String RUNTIME_REPORT_FORMAT = "%-20s\t%10.2f\n";
+
+    /**
+     * format for printing string output, preceded by their tags
+     */
+    public static final String STRING_REPORT_FORMAT =  "%-20s\t%16s\n";
     
     /**
      * prints the number of times each lower bound type was effective, in a
@@ -1088,7 +1093,7 @@ public class VCSolver {
         }
     }
 
-    boolean lpReduction() {
+    boolean lpReduction() throws AbortTimeLimit {
         red_source = VERTEX_LP_STRING;
 
         long start_time = System.nanoTime();
@@ -1198,7 +1203,7 @@ public class VCSolver {
         return oldn != remaining_vertices;
     }
 
-    boolean deg1Reduction() {
+    boolean deg1Reduction() throws AbortTimeLimit {
         try (Stat stat = new Stat("reduce_deg1")) {
             if (DEBUG == 3) {
                 System.out.format("deg1 reduction -> Before: %s\n", getCurrentSolution());
@@ -1262,7 +1267,7 @@ public class VCSolver {
         }
     }
 
-    boolean dominateReduction() {
+    boolean dominateReduction() throws AbortTimeLimit {
         try (Stat stat = new Stat("reduce_dominate")) {
             if (DEBUG == 3) {
                 System.out.format("dom reduction -> Before: %s\n", getCurrentSolution());
@@ -1314,7 +1319,7 @@ loop :
      * performs all possible fold2 reductions; if the neighbors of any
      * degree-2 vertex are adjacent, a dominance reduction takes place instead
      */
-    boolean fold2Reduction() {
+    boolean fold2Reduction() throws AbortTimeLimit {
         try (Stat stat = new Stat("reduce_fold2")) {
             if (DEBUG == 3) {
                 System.out.format("fold2 reduction -> Before: %s\n", getCurrentSolution());
@@ -1371,7 +1376,7 @@ loop :
         }
     }
 
-    boolean twinReduction() {
+    boolean twinReduction() throws AbortTimeLimit {
         try (Stat stat = new Stat("reduce_twin")) {
             if (DEBUG == 3) {
                 System.out.format("twin reduction -> Before: %s\n", getCurrentSolution());
@@ -1451,7 +1456,7 @@ loop :
         }
     }
 
-    boolean funnelReduction() {
+    boolean funnelReduction() throws AbortTimeLimit {
         try (Stat stat = new Stat("reduce_alternative")) {
             if (DEBUG == 3) {
                 System.out.format("funnel reduction -> Before: %s\n", getCurrentSolution());
@@ -1570,7 +1575,7 @@ loop :
         }
     }
 
-    boolean deskReduction() {
+    boolean deskReduction() throws AbortTimeLimit {
         try (Stat stat = new Stat("reduce_desk")) {
             if (DEBUG == 3) {
                 System.out.format("desk reduction -> Before: %s\n", getCurrentSolution());
@@ -1670,7 +1675,7 @@ loop :
         }
     }
 
-    boolean unconfinedReduction() {
+    boolean unconfinedReduction() throws AbortTimeLimit {
         try (Stat stat = new Stat("reduce_unconfined")) {
             if (DEBUG == 3) {
                 System.out.format("unconfined reduction -> Before: %s\n", getCurrentSolution());
@@ -1835,7 +1840,7 @@ loop :
     }
 
     // Returns 1 if graph is reduced, 0 otherwise. -1 for ???
-    int packingReduction() {
+    int packingReduction() throws AbortTimeLimit {
         try (Stat stat = new Stat("reduce_packing")) {
             long start_time = System.nanoTime();
             if (DEBUG == 3) {
@@ -1961,7 +1966,7 @@ loop :
         } // end, try block (no catch)
     } // packingReduction
 
-    void branching() {
+    void branching() throws AbortTimeLimit {
         int oldLB = lb;
         LowerBoundType oldLBType = lbType;
         int v = -1, v_degree = 0;
@@ -2413,7 +2418,7 @@ loop :
         } // try block (no catch)
     } // cliqueLowerBound
 
-    boolean decompose() {
+    boolean decompose() throws AbortTimeLimit {
         if ( DEBUG > 0 ) {
             debug("-> decompose, n = %4d, remaining_vertices = %4d%n",
                     n, remaining_vertices);
@@ -2822,7 +2827,7 @@ loop :
         return true;
     }
 
-    int lowerBound() {
+    int lowerBound() throws AbortTimeLimit {
         int tmp;
         if (DEBUG >= 2) {
             debug("%-20s (%d): %s, %s\n", "before lower bound", depth, getOptimalSolution(), getCurrentSolution());
@@ -2866,7 +2871,7 @@ loop :
     }
 
     // Return true if "quit reductions" or packing reduction returns -1
-    boolean reduce() {
+    boolean reduce() throws AbortTimeLimit {
         int oldn = remaining_vertices;
         if (DEBUG >= 2) {
             debug("%-20s (%d): %s, %s\n", "before reductions", depth, getOptimalSolution(), getCurrentSolution());
@@ -2983,10 +2988,13 @@ loop :
     /**
      * Process a "node"
      */
-    void rec(String label) {
+    void rec(String label) throws AbortTimeLimit {
         // check for timeout
         double current = 1e-9 * System.nanoTime();
-        if ( current >= timelimit ) return;
+        if ( current >= timelimit ) {
+            throw new AbortTimeLimit(timelimit - startTime,
+                                     current - startTime);
+        }
         if ( current >= previous + PRINT_INTERVAL
              && current > startTime + PRINT_INTERVAL
              && ! QUIET ) {
@@ -3094,7 +3102,7 @@ loop :
         }
     }
 
-    void debug(String str, Object...os) {
+    void debug(String str, Object...os) throws AbortTimeLimit {
         StringBuilder sb = new StringBuilder();
         Calendar c = Calendar.getInstance();
         sb.append(String.format("%02d:%02d:%02d  ", c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND)));
@@ -3105,7 +3113,7 @@ loop :
         System.err.printf(str, os);
     }
 
-    public int solve() {
+    public int solve() throws AbortTimeLimit {
         if (DEBUG >= 3) {
             System.out.print(getAdjList());
             System.out.println("<<<<<");
@@ -3142,4 +3150,4 @@ loop :
 
 }
 
-//  [Last modified: 2019 08 14 at 19:29:29 GMT]
+//  [Last modified: 2020 02 06 at 22:40:26 GMT]

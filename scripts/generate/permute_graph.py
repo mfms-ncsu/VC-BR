@@ -1,10 +1,16 @@
 #! /usr/bin/env python3
+
+"""
+creates a given number of copies of a graph in snap format;
+the vertices are randomly renumbered and edges put in random order in each copy
+"""
+
 import argparse
 import random
 from copy import deepcopy
 from time import gmtime, strftime
 
-# random.shuffle(list)
+EXTENSION = ".snap"
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -40,7 +46,7 @@ def get_edges(file_name):
     return edges, vertex_ids
 
 def create_permutation_files(mapping, edges, directory, base_name, number):
-    new_file = directory + '/' + base_name + "-{:02d}".format(number) + '.txt'
+    new_file = directory + '/' + base_name + "-{:02d}".format(number) + EXTENSION
     with open(new_file, 'w') as f:
         date_and_time_string = strftime("%Y-%m-%d %X", gmtime())
         for comment in _comments:
@@ -50,7 +56,7 @@ def create_permutation_files(mapping, edges, directory, base_name, number):
             f.write("{} {}\n".format(mapping[edge[0]], mapping[edge[1]]))
     map_file = directory + '/' + base_name + "-{:02d}".format(number) + '.map'
     with open(map_file, 'w') as f:
-        f.write("# mapping file for {}-{:02d}.txt, created {}\n".format(base_name, number, date_and_time_string))
+        f.write("# mapping file for {}-{:02d}EXTENSION, created {}\n".format(base_name, number, date_and_time_string))
         for original, mapped in mapping.items():
             f.write("{} {}\n".format(mapped, original))
 
@@ -63,7 +69,7 @@ def create_mapping(original_vertices, permuted_vertices):
 
 if __name__ == '__main__':
     args = parse_arguments()
-    print("reading in original graph")
+    print("reading original graph")
     edges, vertex_ids = get_edges(args.input_file)
     base_name = '.'.join(args.input_file.split("/")[-1].split(".")[:-1])
     if args.compact:
@@ -74,6 +80,7 @@ if __name__ == '__main__':
     create_permutation_files(mapping, edges, args.output_folder, base_name, 0)
     print("creating permutations")
     for i in range(1, int(args.number)):
+        print("creating permutation %d" % i)
         random.shuffle(permuted_ids)
         mapping = create_mapping(vertex_ids, permuted_ids)
         random.shuffle(edges)
@@ -82,4 +89,4 @@ if __name__ == '__main__':
     print("done with ", args.input_file.split("/")[-1], "number of instances", args.number)
     print(" in directory", args.output_folder)
 
-#  [Last modified: 2019 03 10 at 20:08:23 GMT]
+#  [Last modified: 2020 01 10 at 18:19:57 GMT]

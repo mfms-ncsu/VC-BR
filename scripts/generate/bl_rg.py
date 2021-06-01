@@ -8,10 +8,12 @@ bl_rg.py - (bucket-list random graph) generates graphs with a specified degree v
 
 @author Matt Stallmann
 @date 2018/7/18
+"""
 
+"""
 @todo The file name created with the -of option should be a better reflection
 of reality. For example, a -dv 0 does not guarantee a regular graph; you
-also need the right -md and -MD settings, and those alone might work.
+also need the right -md and -MD settings, and those alone might not work.
 
 @todo The -dv option is finicky as far as controlling real degree
 distribution is concerned. Often, it takes many tries with different -dv,
@@ -56,7 +58,8 @@ Priorities: [if not specified by user, min_deg = 1 and max_deg = n-1]
 import sys
 import os
 import random
-import argparse
+from argparse import ArgumentParser
+from argparse import RawTextHelpFormatter # to allow newlines in help messages
 import statistics
 import functools
 
@@ -74,19 +77,23 @@ def date():
     return date_pipe.readlines()[0].split()[0]
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
         description = "Creates a random (connected) graph following, as much as possible, the specifications supplied by the user; graph is printed in snap format on standard output",
         epilog = "min_deg and max_deg will impact the effect of deg_variance"
+        + "; for regular graphs, use -dv 0"
     )
     parser.add_argument("vertices", help = "number of vertices", type = int)
     parser.add_argument("average_degree",
-                        help = "average degree - number of edges is vertices * this / 2; restricted to be integer",
+                        help = "average degree - number of edges is\n vertices * this / 2; restricted to be integer",
                         type = int)
     parser.add_argument("-s", "--seed",
                         help = "random seed (default is based on internal system state)",
                         type = int)
     parser.add_argument("-dv", "--deg_variance",
-                        help = "desired degree variance, 0 means regular, 1 means distribution is roughly uniform, > 1 means roughly power law", type=float, default = 1)
+                        help = "desired degree variance,\n"
+                        + " 0 means regular, 1 means distribution is roughly uniform,\n"
+                        + " > 1 means roughly power law\n"
+                        + " (default 1)", type=float, default = 1)
     parser.add_argument("-md", "--min_deg",
                         help = "miminum degree of a vertex",
                         type = int)
@@ -95,7 +102,8 @@ def parse_arguments():
                         type = int)
     parser.add_argument("-o", "--output", help = "send output to file with given name")
     parser.add_argument("-of", "--output_file", action='store_true',
-                        help = "sends output to a file with a standardized name of the form blg-vertices_density_dv_md'D'MD_s.txt")
+                        help = "sends output to a file with a standardized name\n"
+                        + " of the form blg-vertices_density_dv_md'D'MD_s.txt")
     args = parser.parse_args()
     return args
 
@@ -381,4 +389,5 @@ if __name__ == "__main__":
     write_graph(file_stream)
     debug_print("%s\n", sorted([len(x) for x in _neighbors]))
 
-#  [Last modified: 2021 06 01 at 18:55:27 GMT]
+
+#  [Last modified: 2021 06 01 at 19:23:45 GMT]

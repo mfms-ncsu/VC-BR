@@ -1,11 +1,13 @@
 #! /usr/bin/env python3
 
-## snap2lpx.py - lightweight script to convert a snap file to a
-## CPLEX-readable file; vertices numbered 0 through the maximum vertex number
-## are assumed to exist; no harm done if they don't - it simply means that
-## there will be variables not involved in any constraints.
-## Reason for this is so that the -verify option in cplex_ilp produces a string
-## of 0's and 1's that represent vertices starting at vertex 0.
+"""
+ lightweight script to convert a snap file to a CPLEX-readable file;
+ vertices numbered 0 through the maximum vertex number are assumed to exist;
+ no harm done if they don't - it simply means that
+ there will be variables not involved in any constraints;
+ reason for this is so that the -verify option in cplex_ilp produces a string
+ of 0's and 1's that represents vertices starting at vertex 0.
+"""
 
 import argparse
 import sys
@@ -87,4 +89,4 @@ if __name__ == '__main__':
     write_binary_variables(sys.stdout, vertex_list)
     write_end(sys.stdout)
 
-#  [Last modified: 2019 01 21 at 18:15:37 GMT]
+#  [Last modified: 2019 09 17 at 21:54:29 GMT]

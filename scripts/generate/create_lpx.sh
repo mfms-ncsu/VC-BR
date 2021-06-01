@@ -1,7 +1,6 @@
-# !/bin/bash
+#! /bin/bash
 
-## create_lpx.sh - creates a directory containing cplex input instances from instances
-#                  in a given directory
+# creates a directory containing cplex input instances from instances in a given directory
 # note: snap2lpx.py must be in the same directory as this script
 
 if [ $# -ne 1 ]; then
@@ -41,4 +40,4 @@ do
     echo "======= done with $base_name"
 done
 
-#  [Last modified: 2019 07 13 at 20:56:07 GMT]
+#  [Last modified: 2019 09 17 at 21:47:15 GMT]

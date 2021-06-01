@@ -1,4 +1,9 @@
 #! /usr/bin/env python3
+
+"""
+extracts an induced subgraph from a graph in snap format
+"""
+
 import argparse
 import sys
 from time import gmtime, strftime
@@ -106,4 +111,4 @@ if __name__ == '__main__':
     print_header(sys.stdout, subgraph_vertices)
     print_graph(sys.stdout, subgraph_edges, mapping)
 
-#  [Last modified: 2017 08 15 at 22:48:13 GMT]
+#  [Last modified: 2019 09 17 at 21:31:49 GMT]

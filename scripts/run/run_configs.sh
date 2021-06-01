@@ -1,7 +1,7 @@
 #! /bin/bash
 
-## run_configs.sh - for running standard benchmark experiments using the Akiba-Iwata solver
-##                  uses benchmark_experiments.py, which must be in the same directory.
+# for running standard benchmark experiments using the Akiba-Iwata solver;
+# uses benchmark_experiments.py, which must be in the same directory.
 
 CONFIG_FILE=all_configs.txt
 CSV_FIELDS=useful_fields.txt
@@ -93,6 +93,7 @@ done
 java_dir=${script_dir%/*/*}/$VCSolver_PATH
 echo "java_dir = $java_dir"
 pushd $java_dir > /dev/null
+echo "compiling VC-Solver"
 ./build.sh
 popd > /dev/null
 java_exec_dir=$java_dir/bin
@@ -111,4 +112,4 @@ $exec_script $input_dir/ $output_dir/ $options_file $config_dir/$CSV_FIELDS "$ja
 
 echo "*** Output is in $csv_output; previous output, if any, saved as '$alternate_name' ***"
 
-#  [Last modified: 2019 07 07 at 20:02:29 GMT]
+#  [Last modified: 2020 02 06 at 18:44:44 GMT]

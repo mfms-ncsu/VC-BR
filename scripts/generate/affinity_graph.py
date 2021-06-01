@@ -1,12 +1,14 @@
 #! /usr/bin/env python3
 
-## affinity_graph.py - offers a mechanism for producing an affinity graph as follows:
-#   - create a random bipartite graph G_B = (V_0, V_1, A)
-#   - for each v,w in V_0, add edge vw if there exists x in V_1 such that vx,wx in A
-#   - remove V_1
-#
-# @author Matthias Stallmann
-# @date 2018/3/29
+"""
+ affinity_graph.py - offers a mechanism for producing an affinity graph as follows:
+   - create a random bipartite graph G_B = (V_0, V_1, A)
+   - for each v,w in V_0, add edge vw if there exists x in V_1 such that vx,wx in A
+   - remove V_1
+
+ @author Matthias Stallmann
+ @date 2018/3/29
+"""
 
 import sys
 import os
@@ -590,4 +592,4 @@ if __name__ == "__main__":
     create_bipartite_edges( args.edge_prob, args.deg_var )
     print_graph( sys.stdout, args )
 
-#  [Last modified: 2021 06 01 at 18:54:25 GMT]
+#  [Last modified: 2021 06 01 at 19:24:15 GMT]

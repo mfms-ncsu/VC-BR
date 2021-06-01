@@ -1,7 +1,6 @@
 #! /bin/bash
 
-## harvest_instance_data.sh - creates a csv file with data for specific
-## instances from a selection of existing csv files
+# creates a csv file with data for specific instances from a selection of existing csv files
 
 function usage {
     echo "Usage: harvest_instance_data.sh NAMES INSTANCE_FILE"
@@ -44,4 +43,4 @@ for file in $other_files; do
 done
 cat $outfile
 
-#  [Last modified: 2019 07 19 at 18:09:24 GMT]
+#  [Last modified: 2019 09 17 at 21:36:46 GMT]

@@ -1,13 +1,15 @@
 #! /usr/bin/env python3
 
-# checks to see whether a given solution is correct for a given vertex cover instance
-# Usage: ./verify_vertex_cover.py [options] problem_instance < solution
-#        where problem_instance is a file in snap format and solution is one of
-#           - a list of vertices in the cover, one per line (default)
-#           - a single string of 0's and 1's, where a 1 in position i means i is in the cover
-# Can be used as a filter, as in
-#    cat - | ./verify_vertex_cover [options] problem_instance
-# and then paste the solution on the terminal
+"""
+ checks to see whether a given solution is correct for a given vertex cover instance
+ Usage: ./verify_vertex_cover.py [options] problem_instance < solution
+        where problem_instance is a file in snap format and solution is one of
+           - a list of vertices in the cover, one per line (default)
+           - a single string of 0's and 1's, where a 1 in position i means i is in the cover
+ Can be used as a filter, as in
+    cat - | ./verify_vertex_cover [options] problem_instance
+ and then paste the solution on the terminal
+"""
 
 import argparse
 import sys
@@ -21,7 +23,6 @@ def parse_arguments():
                                      + " or as a list of vertex numbers,"
                                      + " and checks whether the cover is"
                                      + " valid for the input graph."
-                                     + " Also reports vertices in the cover."
                                      + " Usage: cat - | verify_vertex_cover ... "
                                      + "and paste the solution."
                                      + " The vector of 0's and 1's is 0-based, i.e.,"
@@ -35,6 +36,8 @@ def parse_arguments():
                         help="print undecided vertices and edges (x's in the input)")
     parser.add_argument("-UV", "--undecided_vertices", action='store_true',
                         help="print undecided vertices only (x's in the input)")
+    parser.add_argument("-s", "--solution", action='store_true',
+                        help="print the cover as a list of vertices (python format)")
 
     args = parser.parse_args()
 
@@ -49,13 +52,14 @@ def parse_arguments():
 # The purpose is debugging convenience in case other information about a
 # partial solution is desired.
 def ReadCover(file_stream, vertex_list):
-    cover = []
+    cover = set()
     status_string = ""
     value = 0
     if vertex_list:
         # each line is an integer representing a vertex
         for line in file_stream:
-             cover.append(int(line))
+             cover.add(int(line))
+             value += 1
     else:
         # line is a string of 0's and 1's; the i-th position is 1 iff vertex i is in the cover
         line = file_stream.readline().strip()
@@ -63,7 +67,7 @@ def ReadCover(file_stream, vertex_list):
         for i in range(len(line)):
             if line[i] == "1":
                 # vertex numbering starts with 1, indexing of strings is 0-based
-                cover.append(i)
+                cover.add(i)
                 value += 1
     return value, cover, status_string
 
@@ -97,16 +101,17 @@ if __name__ == '__main__':
     verified = verify_vertex_cover(graph, cover)
     if args.undecided or args.undecided_vertices:
         print("number_undecided =", len(undecided_vertices))
+    if args.solution:
+        print("cover =", cover)
     if args.undecided and len(undecided_vertices) > 0:
         print("undecided_vertices =", undecided_vertices)
         print("undecided_edges =", undecided_edges)
     elif args.undecided_vertices and len(undecided_vertices) > 0:
         print("undecided_vertices =", undecided_vertices)
-    print("cover =", cover)
     print("value =", value)
     if verified:
         print("Correct Solution")
     else:
-        print("Incorrect Solution")
+        print("*** Incorrect Solution ***")
 
-#  [Last modified: 2019 01 14 at 20:09:02 GMT]
+#  [Last modified: 2020 02 27 at 22:37:50 GMT]

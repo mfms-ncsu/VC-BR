@@ -10,8 +10,8 @@ import tc.wata.util.*;
 import tc.wata.util.SetOpt.*;
 
 public class Main {
-    public static final String VERSION = "1.1.1";
-    public static final String MODIFICATION_DATE = "July 2019";
+    public static final String VERSION = "1.2";
+    public static final String MODIFICATION_DATE = "February 2020";
     
     @Option(abbr = 'b', usage = "0: random, 1: mindeg, 2: maxdeg")
     public static int branching = 2;
@@ -113,10 +113,18 @@ public class Main {
     // @Option(name = "size", usage = "Graph size threshold to enable reductions (1.00 means use reductions from the start")
     public static double size_skip = 1.00;
 
+    /**
+     * so that runtime-relevant information can be accessed from routine that prints it
+     */
+    long start;
+    long end;
+    long totalRuntime;
+    String runStatus = "Normal";
+    
     void printVersionInfo() {
-        System.out.println("Akiba-Iwata branch and reduce solver, Version " + VERSION);
-        System.out.println(" modified by Yang Ho and Matthias Stallmann, "
-                           + MODIFICATION_DATE);
+        System.out.println("Akiba-Iwata branch and reduce solver,"
+                           + " modified by Yang Ho and Matthias Stallmann");
+        System.out.println(" version " + VERSION  + ", " + MODIFICATION_DATE);
     }
 
   /**
@@ -206,6 +214,74 @@ public class Main {
         VCSolver.vertexID = vertexID;
     }
 
+    /**
+     * report all statistics
+     */
+    void report(VCSolver vc) {
+        System.out.format(VCSolver.STRING_REPORT_FORMAT,
+                          "status", runStatus);
+        System.out.format(VCSolver.COUNT_REPORT_FORMAT,
+                          "value", vc.optimal_value);
+        end = System.nanoTime();
+        totalRuntime = end - start;
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "runtime", 1e-9 * totalRuntime);
+        System.out.format(VCSolver.COUNT_REPORT_FORMAT,
+                          "num_branches", VCSolver.nBranchings);
+
+        // special information, relevant only to experiments where we
+        // conditionally applied degree-one/dominance reductions (large
+        // degree variance) or lp reductions (small oct)
+        if ( preprocess_reductions ) {
+            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT, "base_ocTime(ms)",
+                              1e-6 * (oc_end_time - oc_start_time));
+        }
+        if ( VCSolver.total_oc_time > 0 ) {
+                System.out.format(VCSolver.RUNTIME_REPORT_FORMAT, "ocTime(ms)",
+                                  1e-6 * VCSolver.total_oc_time);
+        }
+        if ( VCSolver.total_dv_time > 0 ) {
+            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT, "dvTime(ms)",
+                              1e-6 * VCSolver.total_dv_time);
+        }
+
+        /**
+         * @todo make all reporting consistent, i.e., call on methods of
+         * VCSolver to do the job, as with LB counts and times.
+         * Furthermore, reporting should go into a separate method, that
+         * can be called even if the solver crashes
+         */
+        System.out.format("%s:\n", "Reduction Times (ms)");
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "deg1Time", 1e-6 * VCSolver.degTime);
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "domTime", 1e-6 * VCSolver.domTime);
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "fold2Time", 1e-6 * VCSolver.foldTime);
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "lpTime", 1e-6 * VCSolver.lpTime);
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "twinTime", 1e-6 * VCSolver.twinTime);
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "deskTime", 1e-6 * VCSolver.deskTime);
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "unconfinedTime", 1e-6 * VCSolver.unconfinedTime);
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "funnelTime", 1e-6 * VCSolver.funnelTime);
+        System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
+                          "packingTime", 1e-6 * VCSolver.packingTime);
+        System.out.format("%s:\n", "Vertices Reduced");
+        if ( vc != null ) {
+            vc.printReduceAmounts();
+            System.out.format("%s:\n", "Effective Reduction Calls");
+            vc.printEffectiveReduceCalls();
+            System.out.format("%s:\n", "Total Reduction Calls");
+            vc.printReduceCalls();
+        }
+        VCSolver.printLBCounts();
+        VCSolver.printLBRuntimes();
+    }
+    
     void run(String file, String[] arguments_before_processing) {
         System.err.println("reading the input graph...");
         read(file);
@@ -336,7 +412,6 @@ public class Main {
             VCSolver.MAX_DENSITY_THRESHOLD = max_density_threshold;
         }
 
-        long start, end;
         if (debug >= 2) {
             System.err.println("Graph:");
             for (int i = 0; i < adj.length; i++) {
@@ -353,62 +428,9 @@ public class Main {
             VCSolver.startTime = 1e-9 * start;
             VCSolver.timelimit = 1e-9 * start + timeout;
             vc.solve();
-            end = System.nanoTime();
+            report(vc);
 
-            System.out.format(VCSolver.COUNT_REPORT_FORMAT,
-                              "value", vc.optimal_value);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "runtime", 1e-9 * (end - start));
-            System.out.format(VCSolver.COUNT_REPORT_FORMAT,
-                              "num_branches", VCSolver.nBranchings);
-
-            // special information, relevant only to experiments where we
-            // conditionally applied degree-one/dominance reductions (large
-            // degree variance) or lp reductions (small oct)
-            if ( preprocess_reductions ) {
-                System.out.format(VCSolver.RUNTIME_REPORT_FORMAT, "base_ocTime(ms)",
-                                  1e-6 * (oc_end_time - oc_start_time));
-            }
-            if ( VCSolver.total_oc_time > 0 ) {
-                System.out.format(VCSolver.RUNTIME_REPORT_FORMAT, "ocTime(ms)",
-                                  1e-6 * VCSolver.total_oc_time);
-            }
-            if ( VCSolver.total_dv_time > 0 ) {
-                System.out.format(VCSolver.RUNTIME_REPORT_FORMAT, "dvTime(ms)",
-                                  1e-6 * VCSolver.total_dv_time);
-            }
-
-            /**
-             * @todo make all reporting consistent, i.e., call on methods of
-             * VCSolver to do the job, as with LB counts and times
-             */
-            System.out.format("%s:\n", "Reduction Times (ms)");
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "deg1Time", 1e-6 * VCSolver.degTime);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "domTime", 1e-6 * VCSolver.domTime);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "fold2Time", 1e-6 * VCSolver.foldTime);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "lpTime", 1e-6 * VCSolver.lpTime);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "twinTime", 1e-6 * VCSolver.twinTime);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "deskTime", 1e-6 * VCSolver.deskTime);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "unconfinedTime", 1e-6 * VCSolver.unconfinedTime);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "funnelTime", 1e-6 * VCSolver.funnelTime);
-            System.out.format(VCSolver.RUNTIME_REPORT_FORMAT,
-                              "packingTime", 1e-6 * VCSolver.packingTime);
-            System.out.format("%s:\n", "Vertices Reduced");
-            vc.printReduceAmounts();
-            System.out.format("%s:\n", "Effective Reduction Calls");
-            vc.printEffectiveReduceCalls();
-            System.out.format("%s:\n", "Total Reduction Calls");
-            vc.printReduceCalls();
-            VCSolver.printLBCounts();
-            VCSolver.printLBRuntimes();
+            // read file again so that solution can be printed
             read(file);
             int sum = 0;
             for (int i = 0; i < adj.length; i++) {
@@ -428,8 +450,25 @@ public class Main {
                 System.out.format("%s %s\n", "solution\t", VCSolver.solutionToString(vc.optimal_solution));
             }
         } catch (OutOfMemoryError e) {
-            System.out.printf("file name: %s\nV: %d, E: %d\n", file, adj.length, m); 
-            System.err.println(e.getMessage());
+            /**
+             * @todo catch all runtime errors (and make a timeout an error);
+             * then report statistics regardless of error, but include a
+             * ProvedOptimal output line to be consistent with CPLEX
+             */
+            runStatus = "MemoryLimit";
+            System.err.println(e);
+            report(vc);
+            System.exit(1);
+        } catch (AbortTimeLimit e) {
+            runStatus = "Timeout";
+            System.err.println(e);
+            report(vc);
+            System.exit(1);
+        } catch (Throwable e) {
+            runStatus = "Exception";
+            System.err.println(e);
+            report(vc);
+            e.printStackTrace(System.err);
             System.exit(1);
         }
     }
@@ -451,4 +490,4 @@ public class Main {
     }
 }
 
-//  [Last modified: 2019 08 14 at 19:24:51 GMT]
+//  [Last modified: 2020 02 06 at 22:51:06 GMT]

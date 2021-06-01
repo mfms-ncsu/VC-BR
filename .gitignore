@@ -1,6 +1,10 @@
 # Mac stuff
 .DS_Store
 
+# generated files (overwrite in subdirectories for test instances)
+*.snap
+*.lpx
+
 # editor backups
 *~
 ~*

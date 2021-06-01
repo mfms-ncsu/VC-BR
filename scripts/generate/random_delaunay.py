@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
 
-## random_delaunay.py
-# creates a random Delaunay triangulation using delaunay.py to do the
-# triangulation after a random set of points have been
-# chosen; there is an option to triangulate the infinite face
+"""
+ creates a random Delaunay triangulation using delaunay.py to do the
+ triangulation after a random set of points have been
+ chosen; there is an option to triangulate the infinite face
+"""
 
 import numpy
 from numpy import array
@@ -24,7 +25,7 @@ def parse_arguments():
                         help="triangulate the infinite face")
     parser.add_argument("-d", "--dual", action="store_true", help="produce the dual graph")
     parser.add_argument("-f", "--graph_format",
-                        help="graph format (snap, gph); default is snap; gph does no work if --dual option is used",
+                        help="graph format (snap, gph); default is snap (no coordinates or edge weights); gph includes both coordinates and edge lengths",
                         default="snap")
     parser.add_argument("number_of_vertices", help="number of vertices; if --dual option is used, the actual number will be the number of faces, which is 2n-4 if --infinite_face is also used; to get N vertices in that case, you need to specify (N+4)/2", type=int)
     args = parser.parse_args()
@@ -84,9 +85,12 @@ def print_gph(out_stream, points, edges, seed):
         c comment line k
 
         g number_of_nodes number_of_edges
+        IF the graph is not a dual
         n v_1 x_1 y_1
         ...
         n v_n x_n y_n
+        ------------
+        ALWAYS, but omit weights if in snap format
         e source_1 target_1 weight_1
         ...
         e source_m target_m weight_m
@@ -134,9 +138,10 @@ if __name__ == '__main__':
         delaunay.triangulateInfiniteFace()
     if args.dual:
         delaunay.computeDual()
-        n = len(delaunay.getDualPoints())
+        points = delaunay.getDualPoints()
         edges = delaunay.getDualEdges()
     else:
+        points = delaunay.getPoints()
         edges = delaunay.getEdges()
     if args.output:
         out_stream = open(args.output, 'w')
@@ -145,8 +150,8 @@ if __name__ == '__main__':
     if args.graph_format == "snap":
         print_graph(out_stream, n, edges, seed)
     elif args.graph_format == "gph":
-        print_gph(out_stream, delaunay.getPoints(), edges, seed)
+        print_gph(out_stream, points, edges, seed)
     else:
         print("unknown graph format", args.graph_format)
-        
-#  [Last modified: 2021 06 01 at 19:14:16 GMT]
+
+#  [Last modified: 2021 06 01 at 19:22:39 GMT]
