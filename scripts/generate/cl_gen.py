@@ -102,5 +102,4 @@ if __name__ == '__main__':
     G = nx.expected_degree_graph(degree_list, args.seed, False)
     write_graph(out_stream, G, args.seed)
 
-
-#  [Last modified: 2021 06 01 at 19:23:09 GMT]
+#  [Last modified: 2021 06 01 at 19:23:14 GMT]
