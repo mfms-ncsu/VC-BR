@@ -22,11 +22,14 @@ DEFAULT_STAT_LIST=["min", "bottom", "med", "mean", "top", "max", "stdev", "sprea
 def parse_arguments():
     parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
                                      description="Read graphs in snap format and"
-                                     + " produces degree statistics in csv format"
-                                     + "\n in a file called z_ds-input_path.csv") 
+                                     + " produces degree statistics in csv format")
 
     parser.add_argument("input_path", help="a file in snap format"
                         + " or a directory containing such files")
+    parser.add_argument("-o", "--output", help = "send output to file with given name")
+    parser.add_argument("-of", "--output_file", action='store_true',
+                        help = "sends output to a file with a standardized name\n"
+                        + " of the form z_ds-NAME.csv, where NAME is the file or directory name")
     parser.add_argument("-s", "--stats", dest="stats",
                         help="a comma separated list of statistics to print, options are:"
                         + "\n min, med, mean, max, stdev, first, third, iqrt, bottom, top, spread, nad"
@@ -229,29 +232,44 @@ if __name__ == '__main__':
     global _max_degree
     global _threshold
     args = parse_arguments()
+
+    input_path = args.input_path
+    if not ( os.path.isdir(input_path) or os.path.isfile(input_path) ):
+        print("{} is not a file or a directory".format(input_path))
+        sys.exit()
+        
     if args.stats:
         stat_list = args.stats.split(',')
     else:
         stat_list = DEFAULT_STAT_LIST
     _max_degree = args.max_degree
     _threshold = args.degree_threshold
-    if os.path.isdir(args.input_path):
-        output_name = OUTPUT_PREFIX + directory_base(args.input_path) + ".csv"
+    
+    # choose output stream based on command line args
+    outstream = sys.stdout
+    output_name = None
+    if args.output_file:
+        if os.path.isdir(input_path):
+            output_name = OUTPUT_PREFIX + directory_base(input_path) + ".csv"
+        else:
+            basename = extension_omitted(directory_base(input_path))
+            output_name = OUTPUT_PREFIX + basename + ".csv"
+    elif args.output:
+        output_name = args.output
+    if output_name:
         outstream = open(output_name, 'w')
-        write_header(outstream, stat_list)
-        for file_name in os.listdir(args.input_path):
-            instream = open(args.input_path + "/" + file_name, 'r')
+
+    # compile statistics
+    write_header(outstream, stat_list)
+    if os.path.isdir(input_path):
+        for file_name in os.listdir(input_path):
+            instream = open(input_path + "/" + file_name, 'r')
             basename = extension_omitted(file_name)
-            print("computing statistics for", file_name)
+            if output_name:
+                print("computing statistics for", file_name)
             write_statistics(instream, outstream, basename, stat_list)
-    elif os.path.isfile(args.input_path):
-        basename = extension_omitted(directory_base(args.input_path))
-        output_name = OUTPUT_PREFIX + basename + ".csv"
-        outstream = open(output_name, 'w')
-        write_header(outstream, stat_list)
-        instream = open(args.input_path, 'r')
+    elif os.path.isfile(input_path):
+        instream = open(input_path, 'r')
         write_statistics(instream, outstream, basename, stat_list)
-    else:
-        print("{} is not a file or a directory")
         
-#  [Last modified: 2020 01 17 at 15:31:34 GMT]
+#  [Last modified: 2021 06 02 at 19:10:30 GMT]
