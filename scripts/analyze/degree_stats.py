@@ -262,7 +262,11 @@ if __name__ == '__main__':
     # compile statistics
     write_header(outstream, stat_list)
     if os.path.isdir(input_path):
-        for file_name in os.listdir(input_path):
+        # CAUTION: the file list will be sorted in (apparently) random order
+        # Sorting does not work if you do joins with csv files from Linux runs
+        # Python sort is case sensitive, Linux file order is not
+        file_list = os.listdir(args.input_path)
+        for file_name in file_list:
             instream = open(input_path + "/" + file_name, 'r')
             basename = extension_omitted(file_name)
             if output_name:
@@ -272,4 +276,4 @@ if __name__ == '__main__':
         instream = open(input_path, 'r')
         write_statistics(instream, outstream, basename, stat_list)
         
-#  [Last modified: 2021 06 02 at 19:10:30 GMT]
+#  [Last modified: 2021 06 04 at 14:36:56 GMT]
