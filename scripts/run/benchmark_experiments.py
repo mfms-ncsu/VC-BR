@@ -53,10 +53,12 @@ def directory_base(path):
     if index < 0:
         return path             # no /
     return path[index+1:]       # there's stuff after last /
-    
-# runs the program with the given options on the input file and puts the
-# results in the output file; tag is added to the name of the output file
-# @return True iff the run was free of errors
+
+"""
+runs the program with the given options on the input file and puts the
+results in the output file; tag is added to the name of the output file
+@return True iff the run was free of errors
+"""
 def run_option(program, input_file, options, tag, output_file):
     command = '{} {} {}'.format(program, options, input_file)
     sys.stderr.write("Running option(s) tagged as: {}\nFull command: {}\n".format(tag, command))
@@ -77,10 +79,12 @@ def run_option(program, input_file, options, tag, output_file):
         error_stream.write("** {}\n".format(date_time))
         error_stream.write("** Check {} for more details\n".format(output_file))
 
-# parses the output file and creates a column for each field that was
-# specified in the list of fields
-# @param option a tag for the option
-# @param results a 2-dimensional table with a value for each option/field combination
+"""
+parses the output file and creates a column for each field that was
+specified in the list of fields
+@param option a tag for the option
+@param results a 2-dimensional table with a value for each option/field combination
+"""
 def process_output(output_file, option, fields, results):
     with open(output_file, 'r') as output:
         for line in output:
