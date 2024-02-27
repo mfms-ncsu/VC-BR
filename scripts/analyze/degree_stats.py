@@ -17,7 +17,7 @@ OUTPUT_PREFIX = "z_ds-"         # put degree stats files at the end of a directo
 INSTANCE_HEADER = "00-Instance" # standard header for problem instance to allow merging
 VERTEX_HEADER = "n"
 EDGE_HEADER = "m"
-DEFAULT_STAT_LIST=["min", "bottom", "med", "mean", "top", "max", "stdev", "spread", "nad"]
+DEFAULT_STAT_LIST=["min", "bottom", "med", "mean", "top", "max", "stdev", "spread", "var", "nad"]
 
 def parse_arguments():
     parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
@@ -32,7 +32,7 @@ def parse_arguments():
                         + " of the form z_ds-NAME.csv, where NAME is the file or directory name")
     parser.add_argument("-s", "--stats", dest="stats",
                         help="a comma separated list of statistics to print, options are:"
-                        + "\n min, med, mean, max, stdev, first, third, iqrt, bottom, top, spread, nad"
+                        + "\n min, med, mean, max, var, stdev, first, third, iqrt, bottom, top, spread, nad"
                         + "\n  where first and third are the first and third quartile"
                         + ", respectively"
                         + "\n  iqrt is the interquartile ratio = (third - first) / median"
@@ -154,6 +154,7 @@ def write_statistics(instream, outstream, instance, stat_list):
     minimum = degree_sequence[0]
     maximum = degree_sequence[-1]
     mean = statistics.mean(degree_sequence)
+    variance = statistics.variance(degree_sequence)
     stdev = statistics.stdev(degree_sequence)
     bottom, first_quartile, median, third_quartile, top = percentiles(degree_sequence, args.percentile)
     output_list = [instance, vertices, edges]
@@ -174,6 +175,8 @@ def write_statistics(instream, outstream, instance, stat_list):
             output_list.append(maximum)
         elif stat == "mean":
             output_list.append(mean)
+        elif stat == "var":
+            output_list.append(variance)
         elif stat == "stdev":
             output_list.append(stdev)
         elif stat == "iqrt":
@@ -193,16 +196,19 @@ def write_statistics(instream, outstream, instance, stat_list):
     outstream.write("{}\n".format(','.join(output_list)))
 
 """
-@return the file name without the extension, i.e.,
-        everything up to but not including the last '.',
-        or the whole name if there is no '.'
-        or the if the last '.' is the first character
+@return the base name of the file_name without the extension, i.e.,
+    omit the directory path and then include everything up to but not including the last '.';
+    if there is no '.' return the whole name
+    if the last '.' is the first character, return everything after the '.'
 """
 def extension_omitted(file_name):
+    file_name = os.path.basename(file_name)
     index = file_name.rfind('.')
+    # index of 0 means file_name starts with the only '.', -1 means no '.'
     if index > 0:
         return file_name[:index]
-    # index of 0 means file_name starts with the only '.', -1 means no '.'
+    if index == 0:
+        return file_name[1:]
     return file_name
 
 """
@@ -247,6 +253,7 @@ if __name__ == '__main__':
     
     # choose output stream based on command line args
     outstream = sys.stdout
+    basename = None
     output_name = None
     if args.output_file:
         if os.path.isdir(input_path):
@@ -274,6 +281,5 @@ if __name__ == '__main__':
             write_statistics(instream, outstream, basename, stat_list)
     elif os.path.isfile(input_path):
         instream = open(input_path, 'r')
+        basename = extension_omitted(input_path)
         write_statistics(instream, outstream, basename, stat_list)
-        
-#  [Last modified: 2021 06 04 at 14:36:56 GMT]
